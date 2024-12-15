@@ -15,7 +15,6 @@ const PaymentSchema = new mongoose_1.default.Schema({
         type: String,
         required: true
     },
-    fullName: String,
     amount: {
         type: Number,
         required: true
@@ -25,18 +24,10 @@ const PaymentSchema = new mongoose_1.default.Schema({
         required: true,
         unique: true // Ensures no duplicate references
     },
-    currency: {
-        type: String,
-        default: 'NGN'
-    },
     status: {
         type: String,
-        enum: ['pending', 'success', 'failed'],
-        default: 'pending'
-    },
-    paymentMethod: String,
-    lastFourCardDigits: String,
-    channel: String
+        required: true
+    }
 }, {
     timestamps: true,
     versionKey: false

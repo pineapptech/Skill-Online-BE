@@ -10,5 +10,6 @@ const paymentService = new payment_service_1.default();
 const paymentController = new payment_controller_1.default(paymentService);
 const paymentRouter = (0, express_1.Router)();
 paymentRouter.post('/initialize-payment', paymentController.initializePayment);
-paymentRouter.get('/verify-payment/:reference', paymentController.verifyPayment);
+paymentRouter.post('/webhook', paymentController.handleWebhook);
+// paymentRouter.get('/verify-payment/:reference', paymentController.verifyPayment);
 exports.default = paymentRouter;

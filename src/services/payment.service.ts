@@ -1,29 +1,28 @@
 import { Types } from 'mongoose';
 import { IPayment } from '../interfaces/payment.interface';
 import { Payment } from '../models/payment.model';
+import axios from 'axios';
+import { configDotenv } from 'dotenv';
 
+const paystack = axios.create({
+    baseURL: 'https://api.paystack.co',
+    headers: {
+        Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}`
+    }
+});
 class PaymentService {
-    public createPayment = async (payload: Partial<IPayment>): Promise<IPayment> => {
-        try {
-            if (!payload.reference || !payload.amount) {
-                throw new Error('Payment reference and amount are required');
-            }
-
-            const userPayload = await Payment.create({
-                reference: payload.reference,
-                userId: payload?.userId ? new Types.ObjectId(payload.userId) : undefined
-            });
-
-            return userPayload;
-        } catch (error) {
-            console.error('Error creating payment:', error);
-            throw error;
-        }
+    public createPayment = async (email: string, amount: number) => {
+        const response = await paystack.post('/transaction/initialize', {
+            email,
+            amount: amount * 100
+        });
+        return response.data;
     };
 
     // Optional: Add method to find payment by reference
-    public findPaymentByReference = async (reference: string) => {
-        return await Payment.findOne({ reference });
+    public verifyPayment = async (reference: string) => {
+        const response = await paystack.post('/transaction/verify-payment');
+        return response.data;
     };
 }
 

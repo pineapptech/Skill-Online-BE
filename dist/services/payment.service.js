@@ -8,30 +8,30 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-const mongoose_1 = require("mongoose");
-const payment_model_1 = require("../models/payment.model");
+const axios_1 = __importDefault(require("axios"));
+const paystack = axios_1.default.create({
+    baseURL: 'https://api.paystack.co',
+    headers: {
+        Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}`
+    }
+});
 class PaymentService {
     constructor() {
-        this.createPayment = (payload) => __awaiter(this, void 0, void 0, function* () {
-            try {
-                if (!payload.reference || !payload.amount) {
-                    throw new Error('Payment reference and amount are required');
-                }
-                const userPayload = yield payment_model_1.Payment.create({
-                    reference: payload.reference,
-                    userId: (payload === null || payload === void 0 ? void 0 : payload.userId) ? new mongoose_1.Types.ObjectId(payload.userId) : undefined
-                });
-                return userPayload;
-            }
-            catch (error) {
-                console.error('Error creating payment:', error);
-                throw error;
-            }
+        this.createPayment = (email, amount) => __awaiter(this, void 0, void 0, function* () {
+            const response = yield paystack.post('/transaction/initialize', {
+                email,
+                amount: amount * 100
+            });
+            return response.data;
         });
         // Optional: Add method to find payment by reference
-        this.findPaymentByReference = (reference) => __awaiter(this, void 0, void 0, function* () {
-            return yield payment_model_1.Payment.findOne({ reference });
+        this.verifyPayment = (reference) => __awaiter(this, void 0, void 0, function* () {
+            const response = yield paystack.post('/transaction/verify-payment');
+            return response.data;
         });
     }
 }

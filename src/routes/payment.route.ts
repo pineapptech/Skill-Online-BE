@@ -6,6 +6,7 @@ const paymentController = new PayStackController(paymentService);
 const paymentRouter = Router();
 
 paymentRouter.post('/initialize-payment', paymentController.initializePayment);
-paymentRouter.get('/verify-payment/:reference', paymentController.verifyPayment);
+paymentRouter.post('/webhook', paymentController.handleWebhook);
+// paymentRouter.get('/verify-payment/:reference', paymentController.verifyPayment);
 
 export default paymentRouter;
