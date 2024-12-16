@@ -23,7 +23,10 @@ class PaymentController {
                 res.json({ paymentUrl });
             }
             catch (error) {
-                res.status(500).json({ error: 'Payment initiation failed' });
+                res.status(500).json({
+                    error: 'Payment initiation failed',
+                    message: error.message
+                });
             }
         });
     }
@@ -35,7 +38,10 @@ class PaymentController {
                 res.json({ verified: isVerified });
             }
             catch (error) {
-                res.status(500).json({ error: 'Payment verification failed' });
+                res.status(500).json({
+                    error: 'Payment verification failed',
+                    message: error.message
+                });
             }
         });
     }

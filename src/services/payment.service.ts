@@ -41,9 +41,9 @@ export class PayStackService implements IPaymentService {
             });
 
             return response.data.data.authorization_url;
-        } catch (error) {
-            console.error('Payment initiation failed:', error);
-            throw new Error('Payment initiation failed');
+        } catch (error: any) {
+            console.error('Payment initiation failed:', error.message);
+            throw new Error(`Payment initiation failed =>${error.message}`);
         }
     }
 

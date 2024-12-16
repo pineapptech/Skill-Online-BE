@@ -14,8 +14,11 @@ export class PaymentController {
             const { userId, amount, email } = req.body;
             const paymentUrl = await this.paystackService.initiatePayment(userId, amount, email);
             res.json({ paymentUrl });
-        } catch (error) {
-            res.status(500).json({ error: 'Payment initiation failed' });
+        } catch (error: any) {
+            res.status(500).json({
+                error: 'Payment initiation failed',
+                message: error.message
+            });
         }
     }
 
@@ -24,8 +27,11 @@ export class PaymentController {
             const { reference } = req.query;
             const isVerified = await this.paystackService.verifyPayment(reference as string);
             res.json({ verified: isVerified });
-        } catch (error) {
-            res.status(500).json({ error: 'Payment verification failed' });
+        } catch (error: any) {
+            res.status(500).json({
+                error: 'Payment verification failed',
+                message: error.message
+            });
         }
     }
 

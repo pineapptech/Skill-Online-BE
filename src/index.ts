@@ -14,12 +14,7 @@ const port = process.env.PORT || 3000;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(
-    cors({
-        origin: 'https://etsap-fe.vercel.app', // Your frontend URL
-        credentials: true
-    })
-);
+app.use(cors());
 app.use('/api/v1/auth', router);
 app.use('/api', paymentRouter);
 // DEFAULT ROUTE
