@@ -16,7 +16,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(
     cors({
-        origin: 'http://localhost:3000', // Your frontend URL
+        origin: 'https://etsap-fe.vercel.app', // Your frontend URL
         credentials: true
     })
 );

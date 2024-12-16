@@ -28,7 +28,7 @@ class PayStackService {
                 const response = yield axios_1.default.post('https://api.paystack.co/transaction/initialize', {
                     amount: amount * 100, // Convert to kobo/cents
                     email,
-                    callback_url: 'http://localhost:3000/dashboard'
+                    callback_url: 'https://etsap-fe.vercel.app/success'
                 }, {
                     headers: {
                         Authorization: `Bearer ${this.paystackSecretKey}`,
