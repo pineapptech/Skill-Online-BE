@@ -1,29 +1,83 @@
-import { Types } from 'mongoose';
-import { IPayment } from '../interfaces/payment.interface';
-import { Payment } from '../models/payment.model';
 import axios from 'axios';
-import { configDotenv } from 'dotenv';
+import { IPaymentService, PaymentStatus } from '../interfaces/payment.interface';
+import { PaymentRepository } from '../repository/payment.repository';
+import { Types } from 'mongoose';
 
-const paystack = axios.create({
-    baseURL: 'https://api.paystack.co',
-    headers: {
-        Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}`
+export class PayStackService implements IPaymentService {
+    private paystackSecretKey: string;
+    private paymentRepository: PaymentRepository;
+
+    constructor(secretKey: string) {
+        this.paystackSecretKey = secretKey;
+        this.paymentRepository = new PaymentRepository();
     }
-});
-class PaymentService {
-    public createPayment = async (email: string, amount: number) => {
-        const response = await paystack.post('/transaction/initialize', {
-            email,
-            amount: amount * 100
-        });
-        return response.data;
-    };
 
-    // Optional: Add method to find payment by reference
-    public verifyPayment = async (reference: string) => {
-        const response = await paystack.post('/transaction/verify-payment');
-        return response.data;
-    };
+    async initiatePayment(userId: string, amount: number, email: string): Promise<string> {
+        try {
+            const response: any = await axios.post(
+                'https://api.paystack.co/transaction/initialize',
+                {
+                    amount: amount * 100, // Convert to kobo/cents
+                    email,
+                    callback_url: 'http://localhost:3000/dashboard'
+                },
+                {
+                    headers: {
+                        Authorization: `Bearer ${this.paystackSecretKey}`,
+                        'Content-Type': 'application/json'
+                    }
+                }
+            );
+
+            const { reference } = response.data.data;
+
+            // Save payment record
+            await this.paymentRepository.create({
+                userId: new Types.ObjectId(userId),
+                email,
+                amount,
+                reference,
+                status: PaymentStatus.PENDING
+            });
+
+            return response.data.data.authorization_url;
+        } catch (error) {
+            console.error('Payment initiation failed:', error);
+            throw new Error('Payment initiation failed');
+        }
+    }
+
+    async verifyPayment(reference: string): Promise<boolean> {
+        try {
+            const response: any = await axios.get(`https://api.paystack.co/transaction/verify/${reference}`, {
+                headers: {
+                    Authorization: `Bearer ${this.paystackSecretKey}`
+                }
+            });
+
+            const { status } = response.data.data;
+            const isSuccessful = status === 'success';
+
+            // Update payment status
+            await this.paymentRepository.updateStatus(reference, isSuccessful ? PaymentStatus.SUCCESS : PaymentStatus.FAILED);
+
+            return isSuccessful;
+        } catch (error) {
+            console.error('Payment verification failed:', error);
+            return false;
+        }
+    }
+
+    async handleWebhook(payload: any): Promise<void> {
+        const { event, data } = payload;
+
+        switch (event) {
+            case 'charge.success':
+                await this.paymentRepository.updateStatus(data.reference, PaymentStatus.SUCCESS);
+                break;
+            case 'charge.failed':
+                await this.paymentRepository.updateStatus(data.reference, PaymentStatus.FAILED);
+                break;
+        }
+    }
 }
-
-export default PaymentService;

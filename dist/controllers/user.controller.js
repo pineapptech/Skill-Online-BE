@@ -92,7 +92,7 @@ class RegistrationController {
                         filename: 'admission-letter.pdf',
                         // content: `Welcome to our platform, ${userData.firstName}!\nWe're excited to have you on board.`
                         content: pdfBuffer,
-                        contentType: 'application/pdf',
+                        contentType: 'application/pdf'
                     }
                 ]
             };
@@ -125,11 +125,12 @@ class RegistrationController {
                     course,
                     address,
                     regNo,
-                    phone,
+                    phone
                 });
                 res.status(201).json({
                     message: 'Registration successful',
                     user: {
+                        id: newUser._id,
                         name: newUser.firstName,
                         email: newUser.email
                     }

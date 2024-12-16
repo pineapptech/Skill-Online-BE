@@ -1,12 +1,12 @@
-import { Router } from 'express';
-import PayStackController from '../controllers/payment.controller';
-import PaymentService from '../services/payment.service';
-const paymentService = new PaymentService();
-const paymentController = new PayStackController(paymentService);
-const paymentRouter = Router();
+// src/routes/payment.routes.ts
+import express from 'express';
+import { PaymentController } from '../controllers/payment.controller';
 
-paymentRouter.post('/initialize-payment', paymentController.initializePayment);
-paymentRouter.post('/webhook', paymentController.handleWebhook);
-// paymentRouter.get('/verify-payment/:reference', paymentController.verifyPayment);
+const paymentRouter = express.Router();
+const paymentController = new PaymentController(process.env.PAYSTACK_SECRET_KEY || '');
+
+paymentRouter.post('/initialize-payment', paymentController.initiatePayment.bind(paymentController));
+paymentRouter.get('/verify', paymentController.verifyPayment.bind(paymentController));
+paymentRouter.post('/webhook', paymentController.handleWebhook.bind(paymentController));
 
 export default paymentRouter;

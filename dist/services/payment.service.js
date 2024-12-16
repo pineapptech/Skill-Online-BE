@@ -12,27 +12,78 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.PayStackService = void 0;
 const axios_1 = __importDefault(require("axios"));
-const paystack = axios_1.default.create({
-    baseURL: 'https://api.paystack.co',
-    headers: {
-        Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}`
+const payment_interface_1 = require("../interfaces/payment.interface");
+const payment_repository_1 = require("../repository/payment.repository");
+const mongoose_1 = require("mongoose");
+class PayStackService {
+    constructor(secretKey) {
+        this.paystackSecretKey = secretKey;
+        this.paymentRepository = new payment_repository_1.PaymentRepository();
     }
-});
-class PaymentService {
-    constructor() {
-        this.createPayment = (email, amount) => __awaiter(this, void 0, void 0, function* () {
-            const response = yield paystack.post('/transaction/initialize', {
-                email,
-                amount: amount * 100
-            });
-            return response.data;
+    initiatePayment(userId, amount, email) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const response = yield axios_1.default.post('https://api.paystack.co/transaction/initialize', {
+                    amount: amount * 100, // Convert to kobo/cents
+                    email,
+                    callback_url: 'http://localhost:3000/dashboard'
+                }, {
+                    headers: {
+                        Authorization: `Bearer ${this.paystackSecretKey}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                const { reference } = response.data.data;
+                // Save payment record
+                yield this.paymentRepository.create({
+                    userId: new mongoose_1.Types.ObjectId(userId),
+                    email,
+                    amount,
+                    reference,
+                    status: payment_interface_1.PaymentStatus.PENDING
+                });
+                return response.data.data.authorization_url;
+            }
+            catch (error) {
+                console.error('Payment initiation failed:', error);
+                throw new Error('Payment initiation failed');
+            }
         });
-        // Optional: Add method to find payment by reference
-        this.verifyPayment = (reference) => __awaiter(this, void 0, void 0, function* () {
-            const response = yield paystack.post('/transaction/verify-payment');
-            return response.data;
+    }
+    verifyPayment(reference) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const response = yield axios_1.default.get(`https://api.paystack.co/transaction/verify/${reference}`, {
+                    headers: {
+                        Authorization: `Bearer ${this.paystackSecretKey}`
+                    }
+                });
+                const { status } = response.data.data;
+                const isSuccessful = status === 'success';
+                // Update payment status
+                yield this.paymentRepository.updateStatus(reference, isSuccessful ? payment_interface_1.PaymentStatus.SUCCESS : payment_interface_1.PaymentStatus.FAILED);
+                return isSuccessful;
+            }
+            catch (error) {
+                console.error('Payment verification failed:', error);
+                return false;
+            }
+        });
+    }
+    handleWebhook(payload) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const { event, data } = payload;
+            switch (event) {
+                case 'charge.success':
+                    yield this.paymentRepository.updateStatus(data.reference, payment_interface_1.PaymentStatus.SUCCESS);
+                    break;
+                case 'charge.failed':
+                    yield this.paymentRepository.updateStatus(data.reference, payment_interface_1.PaymentStatus.FAILED);
+                    break;
+            }
         });
     }
 }
-exports.default = PaymentService;
+exports.PayStackService = PayStackService;

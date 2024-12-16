@@ -3,13 +3,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const express_1 = require("express");
-const payment_controller_1 = __importDefault(require("../controllers/payment.controller"));
-const payment_service_1 = __importDefault(require("../services/payment.service"));
-const paymentService = new payment_service_1.default();
-const paymentController = new payment_controller_1.default(paymentService);
-const paymentRouter = (0, express_1.Router)();
-paymentRouter.post('/initialize-payment', paymentController.initializePayment);
-paymentRouter.post('/webhook', paymentController.handleWebhook);
-// paymentRouter.get('/verify-payment/:reference', paymentController.verifyPayment);
+// src/routes/payment.routes.ts
+const express_1 = __importDefault(require("express"));
+const payment_controller_1 = require("../controllers/payment.controller");
+const paymentRouter = express_1.default.Router();
+const paymentController = new payment_controller_1.PaymentController(process.env.PAYSTACK_SECRET_KEY || '');
+paymentRouter.post('/initialize-payment', paymentController.initiatePayment.bind(paymentController));
+paymentRouter.get('/verify', paymentController.verifyPayment.bind(paymentController));
+paymentRouter.post('/webhook', paymentController.handleWebhook.bind(paymentController));
 exports.default = paymentRouter;
