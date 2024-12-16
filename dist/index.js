@@ -16,7 +16,14 @@ const app = (0, express_1.default)();
 const port = process.env.PORT || 3000;
 app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({ extended: true }));
-app.use((0, cors_1.default)());
+const corsOptions = {
+    origin: process.env.CORS_ORIGIN || '*',
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'Access-Control-Allow-Origin', 'X-Requested-With'],
+    credentials: true,
+    maxAge: 86400
+};
+app.use((0, cors_1.default)(corsOptions));
 app.use('/api/v1/auth', user_route_1.default);
 app.use('/api', payment_route_1.default);
 // DEFAULT ROUTE
