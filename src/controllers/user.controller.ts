@@ -1,12 +1,13 @@
 import { Request, Response } from 'express';
-import nodemailer from 'nodemailer';
 import { UserService } from '../services/user.service';
 import { configDotenv } from 'dotenv';
-import OfferLetterGenerator from '../utils/offer-letter';
 import { RegistrationValidation, ValidationError } from '../utils/user-schema';
+import OfferEmail from '../emails/offer-letter.email';
+import User from '../models/user.model';
+import { Payment } from '../models/payment.model';
 configDotenv();
 
-interface RegistrationData {
+export interface RegistrationData {
     firstName: string;
     lastName: string;
     email: string;
@@ -18,62 +19,11 @@ interface RegistrationData {
 
 class RegistrationController {
     private userService: UserService;
-    private offerLetter: OfferLetterGenerator;
+    private offerEmail: OfferEmail;
 
-    constructor(userService: UserService, offerLetter: OfferLetterGenerator) {
+    constructor(userService: UserService, offerEmail: OfferEmail) {
         this.userService = userService;
-        this.offerLetter = offerLetter;
-    }
-
-    private async createEmailTransporter() {
-        return nodemailer.createTransport({
-            host: process.env.SMTP_HOST,
-            port: Number(process.env.SMTP_PORT),
-            secure: true,
-            auth: {
-                user: process.env.SMTP_USER,
-                pass: process.env.SMTP_PASS
-            }
-        });
-    }
-
-    private async sendRegistrationEmail(userData: RegistrationData) {
-        const transporter = await this.createEmailTransporter();
-
-        // generate PDF using the new PDF generator
-        const pdfBuffer = await this.offerLetter.generateOfferLetter(userData);
-
-        const mailOptions = {
-            from: process.env.EMAIL_FROM,
-            to: userData.email,
-            subject: 'Registration Successful',
-            html: `
-        <h1>Welcome, ${userData.firstName}!</h1>
-        <h2>Below are Your Onboarding Details...</h2>
-        <p>Online Course sessions starts on Monday, February 3rd 2025</p>
-        <p>Fully Virtual Class</p>
-        <p>2 Learning Sessions Per Week (1 and half Hour per session)</p>
-        <p>6 Months duration (26weeks)</p>
-        <p>Weekly hands-on task + Capstone Project</p>
-        <p>Application form Registration closes Midnight (WAT), January 31st 2025</p>
-        <p>Skillonline will Send Your Login Credentials to your LMS between the 30the and 2nd of February 2025</p>
-      `,
-            attachments: [
-                {
-                    filename: 'admission-letter.pdf',
-                    // content: `Welcome to our platform, ${userData.firstName}!\nWe're excited to have you on board.`
-                    content: pdfBuffer,
-                    contentType: 'application/pdf'
-                }
-            ]
-        };
-
-        try {
-            const info = await transporter.sendMail(mailOptions);
-            console.log('Email sent:', info.response);
-        } catch (error) {
-            console.error('Email sending failed:', error);
-        }
+        this.offerEmail = offerEmail;
     }
 
     public async registerUser(req: Request, res: Response) {
@@ -90,28 +40,39 @@ class RegistrationController {
                 });
                 return;
             }
+
             const { firstName, lastName, email, phone, course, address, regNo, ...otherData } = validatedData;
+
+            const emailExists = await User.findOne({ email });
+            if (emailExists) {
+                res.status(400).json({
+                    status: false,
+                    message: 'Email already exists'
+                });
+                return;
+            }
 
             const newUser = await this.userService.createUser(req.file, firstName, lastName, email, phone, course, address, otherData);
 
-            await this.sendRegistrationEmail({
-                firstName,
-                lastName,
-                email,
-                course,
-                address,
-                regNo,
-                phone
-            });
+            if (newUser) {
+                await this.offerEmail.sendRegistrationEmailWithoutAttachment({ firstName, email, lastName, phone, course, address, regNo });
 
-            res.status(201).json({
-                message: 'Registration successful',
-                user: {
-                    id: newUser._id,
-                    name: newUser.firstName,
-                    email: newUser.email
-                }
-            });
+                res.status(201).json({
+                    message: 'Registration successful',
+                    user: {
+                        id: newUser._id,
+                        name: newUser.firstName,
+                        email: newUser.email
+                    }
+                });
+
+                setTimeout(async () => {
+                    const payment = await Payment.findOne({ email: newUser.email });
+                    if (payment?.status === 'success') {
+                        await this.offerEmail.sendRegistrationEmailWithAttachment({ firstName, email, lastName, phone, course, address, regNo });
+                    }
+                }, 5000);
+            }
         } catch (error: any) {
             console.error('Registration error:', error);
 

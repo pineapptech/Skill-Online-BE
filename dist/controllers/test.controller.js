@@ -23,13 +23,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const nodemailer_1 = __importDefault(require("nodemailer"));
 const dotenv_1 = require("dotenv");
 const user_schema_1 = require("../utils/user-schema");
-const user_model_1 = __importDefault(require("../models/user.model"));
-const payment_model_1 = require("../models/payment.model");
 (0, dotenv_1.configDotenv)();
 class RegistrationController {
-    constructor(userService, offerEmail) {
+    constructor(userService, offerLetter) {
         this.deleteUsers = (req, res) => __awaiter(this, void 0, void 0, function* () {
             const user = yield this.userService.deleteUsers();
             res.status(200).json({
@@ -53,7 +52,58 @@ class RegistrationController {
             });
         });
         this.userService = userService;
-        this.offerEmail = offerEmail;
+        this.offerLetter = offerLetter;
+    }
+    createEmailTransporter() {
+        return __awaiter(this, void 0, void 0, function* () {
+            return nodemailer_1.default.createTransport({
+                host: process.env.SMTP_HOST,
+                port: Number(process.env.SMTP_PORT),
+                secure: true,
+                auth: {
+                    user: process.env.SMTP_USER,
+                    pass: process.env.SMTP_PASS
+                }
+            });
+        });
+    }
+    sendRegistrationEmail(userData) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const transporter = yield this.createEmailTransporter();
+            // generate PDF using the new PDF generator
+            const pdfBuffer = yield this.offerLetter.generateOfferLetter(userData);
+            const mailOptions = {
+                from: process.env.EMAIL_FROM,
+                to: userData.email,
+                subject: 'Registration Successful',
+                html: `
+        <h1>Welcome, ${userData.firstName}!</h1>
+        <h2>Below are Your Onboarding Details...</h2>
+        <p>Online Course sessions starts on Monday, February 3rd 2025</p>
+        <p>Fully Virtual Class</p>
+        <p>2 Learning Sessions Per Week (1 and half Hour per session)</p>
+        <p>6 Months duration (26weeks)</p>
+        <p>Weekly hands-on task + Capstone Project</p>
+        <p>Application form Registration closes Midnight (WAT), January 31st 2025</p>
+        <p>Skillonline will Send Your Login Credentials to your LMS between the 30the and 2nd of February 2025</p>
+      `,
+                attachments: [
+                    {
+                        filename: 'admission-letter.pdf',
+                        // content: `Welcome to our platform, ${userData.firstName}!\nWe're excited to have you on board.`
+                        content: pdfBuffer,
+                        contentType: 'application/pdf'
+                    }
+                ]
+            };
+            try {
+                const info = yield transporter.sendMail(mailOptions);
+                console.log('Email sent:', info.response);
+            }
+            catch (error) {
+                console.error('Email sending failed:', error);
+            }
+        });
     }
     registerUser(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -67,32 +117,24 @@ class RegistrationController {
                     return;
                 }
                 const { firstName, lastName, email, phone, course, address, regNo } = validatedData, otherData = __rest(validatedData, ["firstName", "lastName", "email", "phone", "course", "address", "regNo"]);
-                const emailExists = yield user_model_1.default.findOne({ email });
-                if (emailExists) {
-                    res.status(400).json({
-                        status: false,
-                        message: 'Email already exists'
-                    });
-                    return;
-                }
                 const newUser = yield this.userService.createUser(req.file, firstName, lastName, email, phone, course, address, otherData);
-                if (newUser) {
-                    yield this.offerEmail.sendRegistrationEmailWithoutAttachment({ firstName, email, lastName, phone, course, address, regNo });
-                    res.status(201).json({
-                        message: 'Registration successful',
-                        user: {
-                            id: newUser._id,
-                            name: newUser.firstName,
-                            email: newUser.email
-                        }
-                    });
-                    setTimeout(() => __awaiter(this, void 0, void 0, function* () {
-                        const payment = yield payment_model_1.Payment.findOne({ email: newUser.email });
-                        if ((payment === null || payment === void 0 ? void 0 : payment.status) === 'success') {
-                            yield this.offerEmail.sendRegistrationEmailWithAttachment({ firstName, email, lastName, phone, course, address, regNo });
-                        }
-                    }), 5000);
-                }
+                yield this.sendRegistrationEmail({
+                    firstName,
+                    lastName,
+                    email,
+                    course,
+                    address,
+                    regNo,
+                    phone
+                });
+                res.status(201).json({
+                    message: 'Registration successful',
+                    user: {
+                        id: newUser._id,
+                        name: newUser.firstName,
+                        email: newUser.email
+                    }
+                });
             }
             catch (error) {
                 console.error('Registration error:', error);
