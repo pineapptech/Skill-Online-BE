@@ -26,11 +26,7 @@ class OfferLetterGenerator {
             this.addApplicationFormHeader(doc, userData);
             // Add a line separator
             doc.moveDown();
-            doc.strokeColor('#000000')
-                .lineWidth(1)
-                .moveTo(50, doc.y)
-                .lineTo(550, doc.y)
-                .stroke();
+            doc.strokeColor('#000000').lineWidth(1).moveTo(50, doc.y).lineTo(550, doc.y).stroke();
             doc.moveDown();
             this.addOfferLetterHeader(doc);
             this.addOfferLetterDetails(doc, userData);
@@ -82,22 +78,18 @@ class OfferLetterGenerator {
         }
     }
     addApplicationFormHeader(doc, userData) {
-        doc.font('Helvetica-Bold')
-            .fontSize(16)
-            .text('', { align: 'center' })
-            .moveDown(2);
+        doc.font('Helvetica-Bold').fontSize(16).text('', { align: 'center' }).moveDown(2);
         const formFields = [
             { label: 'Course of Choice', value: userData.course },
             { label: 'Unique Reg No', value: userData.regNo },
             { label: 'Name of Candidate', value: `${userData.firstName} ${userData.lastName}` },
-            { label: 'Address', value: userData.address },
+            { label: 'Address', value: userData.city },
             { label: 'Phone Number', value: userData.phone },
-            { label: 'Date', value: new Date().toLocaleString() },
+            { label: 'Date', value: new Date().toLocaleString() }
         ];
-        doc.font('Helvetica')
-            .fontSize(12);
+        doc.font('Helvetica').fontSize(12);
         // Add form fields to the document
-        formFields.forEach(field => {
+        formFields.forEach((field) => {
             doc.font('Helvetica-Bold')
                 .text(field.label, { continued: true })
                 .font('Helvetica')
@@ -116,10 +108,7 @@ class OfferLetterGenerator {
 
 
 Congratulations on your admission!`;
-        doc.fontSize(14)
-            .font('Times-Roman')
-            .text(body, { align: 'justify', lineGap: 2 })
-            .moveDown();
+        doc.fontSize(14).font('Times-Roman').text(body, { align: 'justify', lineGap: 2 }).moveDown();
     }
     addOfferLetterFooter(doc) {
         try {
@@ -138,11 +127,7 @@ Congratulations on your admission!`;
                     console.log('Error inserting signature: ' + imageError);
                 }
             }
-            doc.fontSize(12)
-                .font('Helvetica')
-                .text('Best regards,', { align: 'left' })
-                .moveDown(2)
-                .text('Gabriele Tomasi-Canova', { align: 'left' });
+            doc.fontSize(12).font('Helvetica').text('Best regards,', { align: 'left' }).moveDown(2).text('Gabriele Tomasi-Canova', { align: 'left' });
         }
         catch (error) {
             console.error('Error in addOfferLetterFooter', error);

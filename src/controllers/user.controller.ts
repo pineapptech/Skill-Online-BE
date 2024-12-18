@@ -12,7 +12,7 @@ export interface RegistrationData {
     lastName: string;
     email: string;
     course: string;
-    address: string;
+    city: string;
     regNo: string;
     phone: string;
 }
@@ -41,7 +41,7 @@ class RegistrationController {
                 return;
             }
 
-            const { firstName, lastName, email, phone, course, address, regNo, ...otherData } = validatedData;
+            const { firstName, lastName, email, phone, course, city, regNo, ...otherData } = validatedData;
 
             const emailExists = await User.findOne({ email });
             if (emailExists) {
@@ -52,10 +52,10 @@ class RegistrationController {
                 return;
             }
 
-            const newUser = await this.userService.createUser(req.file, firstName, lastName, email, phone, course, address, otherData);
+            const newUser = await this.userService.createUser(req.file, firstName, lastName, email, phone, course, city, otherData);
 
             if (newUser) {
-                await this.offerEmail.sendRegistrationEmailWithoutAttachment({ firstName, email, lastName, phone, course, address, regNo });
+                await this.offerEmail.sendRegistrationEmailWithoutAttachment({ firstName, email, lastName, phone, course, city, regNo });
 
                 res.status(201).json({
                     message: 'Registration successful',
@@ -69,7 +69,7 @@ class RegistrationController {
                 setTimeout(async () => {
                     const payment = await Payment.findOne({ email: newUser.email });
                     if (payment?.status === 'success') {
-                        await this.offerEmail.sendRegistrationEmailWithAttachment({ firstName, email, lastName, phone, course, address, regNo });
+                        await this.offerEmail.sendRegistrationEmailWithAttachment({ firstName, email, lastName, phone, course, city, regNo });
                     }
                 }, 5000);
             }

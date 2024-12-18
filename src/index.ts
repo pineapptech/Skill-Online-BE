@@ -5,6 +5,8 @@ import CustomError from './errors/CustomError';
 import router from './routes/user.route';
 import paymentRouter from './routes/payment.route';
 import cors from 'cors';
+import attachedRouter from './routes/attached-email.route';
+import { globalError } from './errors/global.error';
 
 configDotenv();
 connectDB();
@@ -24,11 +26,13 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use('/api/v1/auth', router);
 app.use('/api', paymentRouter);
+app.use('/api/v1/attachment', attachedRouter);
 // DEFAULT ROUTE
 app.use('*', (req: Request, res: Response, next: NextFunction) => {
     const error = new CustomError(`Oops...., It seems like the Route ${req.originalUrl} You are looking for does not Exist`, 404);
     next(error);
 });
+app.use(globalError);
 
 // app.use(globalError);
 app.listen(port, () => console.log(`Listening on ${port}`));

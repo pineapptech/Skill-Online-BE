@@ -31,11 +31,11 @@ class OfferEmail {
             from: process.env.SMTP_USER,
             to: userData.email,
             subject: 'Your Admission Letter Offer',
-            html: `<h2>Welcome ${userData.firstName} ${userData.lastName}<h2/>,
+            html: `<h2>Welcome ${userData.firstName} ${userData.lastName},<h2/>
 
             <p>I am pleased to inform you that you have successfully been admitted in to the Emerging Technology Skill For Africa Program. Please find attached to this email, your admission letter and your program onboarding details.</p>
-            <p>Congratulations</p>,
-            <p>Signed</p>,
+            <p>Congratulations.</p>
+            <p>Signed,</p>
             <p>Gabriele Tomasi-Canova</p>`,
 
             attachments: [

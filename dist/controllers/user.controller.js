@@ -66,7 +66,7 @@ class RegistrationController {
                     });
                     return;
                 }
-                const { firstName, lastName, email, phone, course, address, regNo } = validatedData, otherData = __rest(validatedData, ["firstName", "lastName", "email", "phone", "course", "address", "regNo"]);
+                const { firstName, lastName, email, phone, course, city, regNo } = validatedData, otherData = __rest(validatedData, ["firstName", "lastName", "email", "phone", "course", "city", "regNo"]);
                 const emailExists = yield user_model_1.default.findOne({ email });
                 if (emailExists) {
                     res.status(400).json({
@@ -75,9 +75,9 @@ class RegistrationController {
                     });
                     return;
                 }
-                const newUser = yield this.userService.createUser(req.file, firstName, lastName, email, phone, course, address, otherData);
+                const newUser = yield this.userService.createUser(req.file, firstName, lastName, email, phone, course, city, otherData);
                 if (newUser) {
-                    yield this.offerEmail.sendRegistrationEmailWithoutAttachment({ firstName, email, lastName, phone, course, address, regNo });
+                    yield this.offerEmail.sendRegistrationEmailWithoutAttachment({ firstName, email, lastName, phone, course, city, regNo });
                     res.status(201).json({
                         message: 'Registration successful',
                         user: {
@@ -89,7 +89,7 @@ class RegistrationController {
                     setTimeout(() => __awaiter(this, void 0, void 0, function* () {
                         const payment = yield payment_model_1.Payment.findOne({ email: newUser.email });
                         if ((payment === null || payment === void 0 ? void 0 : payment.status) === 'success') {
-                            yield this.offerEmail.sendRegistrationEmailWithAttachment({ firstName, email, lastName, phone, course, address, regNo });
+                            yield this.offerEmail.sendRegistrationEmailWithAttachment({ firstName, email, lastName, phone, course, city, regNo });
                         }
                     }), 5000);
                 }
