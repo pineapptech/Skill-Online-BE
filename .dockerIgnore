@@ -1,6 +1,0 @@
-.vscode 
-.env.example
-.dockerIgnore 
-dist
-.env
-.gitIgnore
