@@ -40,6 +40,10 @@ const userSchema = new mongoose_1.Schema({
         type: String,
         trim: true
     },
+    address: {
+        type: String,
+        trim: true
+    },
     passportId: {
         type: String,
         trim: true

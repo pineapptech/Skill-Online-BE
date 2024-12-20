@@ -17,11 +17,12 @@ const console_1 = require("console");
 const cloudinary_1 = __importDefault(require("../config/cloudinary"));
 const fs_1 = __importDefault(require("fs"));
 const user_model_1 = __importDefault(require("../models/user.model"));
+const generate_regno_1 = __importDefault(require("../utils/generate-regno"));
 class UserService {
     constructor() {
-        this.createUser = (file, firstName, lastName, email, phone, course, address, userData) => __awaiter(this, void 0, void 0, function* () {
+        this.createUser = (file, firstName, lastName, email, phone, course, city, address, userData) => __awaiter(this, void 0, void 0, function* () {
             // Validate required fields
-            if (!firstName || !lastName || !email || !phone || !course || !address) {
+            if (!firstName || !lastName || !email || !phone || !course || !city || !address) {
                 throw new Error('All Fields are required');
             }
             // Check if file is provided
@@ -38,12 +39,15 @@ class UserService {
                 if (fs_1.default.existsSync(file.path)) {
                     fs_1.default.unlinkSync(file.path);
                 }
+                const regNo = (0, generate_regno_1.default)(course);
                 // Create user with uploaded photo URL
                 const user = yield user_model_1.default.create(Object.assign({ photoUrl: result.secure_url, firstName,
                     lastName,
                     email,
                     phone,
-                    course }, userData));
+                    course,
+                    regNo,
+                    address }, userData));
                 return user;
             }
             catch (error) {

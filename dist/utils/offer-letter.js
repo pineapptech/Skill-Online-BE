@@ -83,7 +83,7 @@ class OfferLetterGenerator {
             { label: 'Course of Choice', value: userData.course },
             { label: 'Unique Reg No', value: userData.regNo },
             { label: 'Name of Candidate', value: `${userData.firstName} ${userData.lastName}` },
-            { label: 'Address', value: userData.city },
+            { label: 'Address', value: userData.address },
             { label: 'Phone Number', value: userData.phone },
             { label: 'Date', value: new Date().toLocaleString() }
         ];
@@ -100,7 +100,7 @@ class OfferLetterGenerator {
     addOfferLetterDetails(doc, userData) {
         const body = `Dear ${userData.firstName} ${userData.lastName},
 
-          This is to inform you that Skillonline Srl on behalf of this Consortium (INTERTEK, ACCREDIA, CIRPS, IBI), after the evaluation of your application to undergo and online professional certification course, has offered you admission to study ${userData.course}
+          This is to inform you that Skillonline Srl on behalf of this Consortium (INTERTEK, ACCREDIA, CIRPS, IBI), after the evaluation of your application to undergo an online professional certification course, has offered you admission to study ${userData.course}
 
           The program which has a duration of six months will commence on the 3rd of February, 2025. We are excited to have you join our community of learners and look forward to supporting your journey towards achieving professional excellence in this field. 
           
@@ -110,10 +110,11 @@ class OfferLetterGenerator {
 Congratulations on your admission!`;
         doc.fontSize(14).font('Times-Roman').text(body, { align: 'justify', lineGap: 2 }).moveDown();
     }
-    addOfferLetterFooter(doc) {
+    /* private addOfferLetterFooter(doc: PDFKit.PDFDocument) {
         try {
             const signaturePath = this.findImagePath('signature.jpeg');
-            const alignLeft = 'left';
+            const alignLeft: any = 'left';
+
             if (signaturePath) {
                 try {
                     doc.image(signaturePath, doc.page.width - 200, doc.y, {
@@ -122,12 +123,34 @@ Congratulations on your admission!`;
                         align: alignLeft
                     });
                     doc.moveDown(1);
-                }
-                catch (imageError) {
+                } catch (imageError) {
                     console.log('Error inserting signature: ' + imageError);
                 }
             }
             doc.fontSize(12).font('Helvetica').text('Best regards,', { align: 'left' }).moveDown(2).text('Gabriele Tomasi-Canova', { align: 'left' });
+        } catch (error) {
+            console.error('Error in addOfferLetterFooter', error);
+        }
+    } */
+    addOfferLetterFooter(doc) {
+        try {
+            doc.fontSize(12).font('Helvetica').text('Best regards,', { align: 'left' });
+            const signaturePath = this.findImagePath('signature.jpeg');
+            if (signaturePath) {
+                try {
+                    doc.image(signaturePath, 50, doc.y, {
+                        // Adjusting x-coordinate for alignment
+                        width: 100,
+                        height: 30
+                    });
+                    doc.moveDown(1);
+                }
+                catch (imageError) {
+                    console.error('Error inserting signature: ' + imageError);
+                }
+            }
+            doc.moveDown(2);
+            doc.fontSize(12).font('Helvetica').text('Gabriele Tomasi-Canova', { align: 'left' });
         }
         catch (error) {
             console.error('Error in addOfferLetterFooter', error);

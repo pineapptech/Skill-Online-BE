@@ -27,6 +27,7 @@ const dotenv_1 = require("dotenv");
 const user_schema_1 = require("../utils/user-schema");
 const user_model_1 = __importDefault(require("../models/user.model"));
 const payment_model_1 = require("../models/payment.model");
+const console_1 = require("console");
 (0, dotenv_1.configDotenv)();
 class RegistrationController {
     constructor(userService, offerEmail) {
@@ -66,7 +67,8 @@ class RegistrationController {
                     });
                     return;
                 }
-                const { firstName, lastName, email, phone, course, city, regNo } = validatedData, otherData = __rest(validatedData, ["firstName", "lastName", "email", "phone", "course", "city", "regNo"]);
+                const { firstName, lastName, email, phone, course, city, regNo, address } = validatedData, otherData = __rest(validatedData, ["firstName", "lastName", "email", "phone", "course", "city", "regNo", "address"]);
+                (0, console_1.log)(regNo);
                 const emailExists = yield user_model_1.default.findOne({ email });
                 if (emailExists) {
                     res.status(400).json({
@@ -75,9 +77,9 @@ class RegistrationController {
                     });
                     return;
                 }
-                const newUser = yield this.userService.createUser(req.file, firstName, lastName, email, phone, course, city, otherData);
+                const newUser = yield this.userService.createUser(req.file, firstName, lastName, email, phone, course, city, address, otherData);
                 if (newUser) {
-                    yield this.offerEmail.sendRegistrationEmailWithoutAttachment({ firstName, email, lastName, phone, course, city, regNo });
+                    yield this.offerEmail.sendRegistrationEmailWithoutAttachment({ firstName, email, lastName, phone, course, city, regNo, address });
                     res.status(201).json({
                         message: 'Registration successful',
                         user: {
@@ -89,7 +91,7 @@ class RegistrationController {
                     setTimeout(() => __awaiter(this, void 0, void 0, function* () {
                         const payment = yield payment_model_1.Payment.findOne({ email: newUser.email });
                         if ((payment === null || payment === void 0 ? void 0 : payment.status) === 'success') {
-                            yield this.offerEmail.sendRegistrationEmailWithAttachment({ firstName, email, lastName, phone, course, city, regNo });
+                            yield this.offerEmail.sendRegistrationEmailWithAttachment({ firstName, email, lastName, phone, course, city, regNo, address });
                         }
                     }), 5000);
                 }

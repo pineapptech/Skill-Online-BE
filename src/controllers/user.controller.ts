@@ -5,6 +5,7 @@ import { RegistrationValidation, ValidationError } from '../utils/user-schema';
 import OfferEmail from '../emails/offer-letter.email';
 import User from '../models/user.model';
 import { Payment } from '../models/payment.model';
+import { log } from 'console';
 configDotenv();
 
 export interface RegistrationData {
@@ -15,6 +16,7 @@ export interface RegistrationData {
     city: string;
     regNo: string;
     phone: string;
+    address: string;
 }
 
 class RegistrationController {
@@ -41,8 +43,8 @@ class RegistrationController {
                 return;
             }
 
-            const { firstName, lastName, email, phone, course, city, regNo, ...otherData } = validatedData;
-
+            const { firstName, lastName, email, phone, course, city, regNo, address, ...otherData } = validatedData;
+            log(regNo);
             const emailExists = await User.findOne({ email });
             if (emailExists) {
                 res.status(400).json({
@@ -52,10 +54,10 @@ class RegistrationController {
                 return;
             }
 
-            const newUser = await this.userService.createUser(req.file, firstName, lastName, email, phone, course, city, otherData);
+            const newUser = await this.userService.createUser(req.file, firstName, lastName, email, phone, course, city, address, otherData);
 
             if (newUser) {
-                await this.offerEmail.sendRegistrationEmailWithoutAttachment({ firstName, email, lastName, phone, course, city, regNo });
+                await this.offerEmail.sendRegistrationEmailWithoutAttachment({ firstName, email, lastName, phone, course, city, regNo, address });
 
                 res.status(201).json({
                     message: 'Registration successful',
@@ -69,7 +71,7 @@ class RegistrationController {
                 setTimeout(async () => {
                     const payment = await Payment.findOne({ email: newUser.email });
                     if (payment?.status === 'success') {
-                        await this.offerEmail.sendRegistrationEmailWithAttachment({ firstName, email, lastName, phone, course, city, regNo });
+                        await this.offerEmail.sendRegistrationEmailWithAttachment({ firstName, email, lastName, phone, course, city, regNo, address });
                     }
                 }, 5000);
             }

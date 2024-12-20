@@ -1,8 +1,6 @@
 import { Request, Response } from 'express';
 import OfferEmail from '../emails/offer-letter.email';
-import AttachmentEmailService from '../services/attached-email.service';
 import User from '../models/user.model';
-import UserService from '../services/user.service';
 import { Payment } from '../models/payment.model';
 import { trace } from 'console';
 
@@ -33,6 +31,7 @@ class AttachmentEmailController {
             const city = user.city;
             const regNo = user.regNo;
             const phone = user.phone;
+            const address = user.address;
 
             const payment = await Payment.findOne({ email: user.email });
             if (payment?.email === user.email && payment?.status === 'success') {
@@ -43,12 +42,18 @@ class AttachmentEmailController {
                     course,
                     city,
                     regNo,
-                    phone
+                    phone,
+                    address
                 });
 
                 res.status(200).json({
                     status: true,
                     message: 'Email Offer Letter Sent successfully...'
+                });
+            } else {
+                res.status(400).json({
+                    status: false,
+                    message: 'Payment not successful Kindly make payment to get your offer letter'
                 });
             }
         } catch (error) {

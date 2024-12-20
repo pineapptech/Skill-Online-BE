@@ -30,13 +30,54 @@ class OfferEmail {
         const mailOptions = {
             from: process.env.SMTP_USER,
             to: userData.email,
-            subject: 'Your Admission Letter Offer',
+            subject: 'ADMISSION LETTER - Emerging Tech Skills for AFrica Program',
             html: `<h2>Welcome ${userData.firstName} ${userData.lastName},<h2/>
 
             <p>I am pleased to inform you that you have successfully been admitted in to the Emerging Technology Skill For Africa Program. Please find attached to this email, your admission letter and your program onboarding details.</p>
             <p>Congratulations.</p>
             <p>Signed,</p>
-            <p>Gabriele Tomasi-Canova</p>`,
+            <p>Gabriele Tomasi-Canova</p>
+            
+            <br>
+      <table border="1" style="border-collapse: collapse; width: 100%; text-align: left;">
+        <thead>
+          <tr>
+            <th style="padding: 8px;">Onboarding Details</th>
+            <th style="padding: 8px;"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="padding: 8px;">Start Date</td>
+            <td style="padding: 8px;">Online Course Sessions start Monday February 3rd 2025</td>
+          </tr>
+          <tr>
+            <td style="padding: 8px;">Learning Model</td>
+            <td style="padding: 8px;">Fully Virtual Classes</td>
+          </tr>
+          <tr>
+            <td style="padding: 8px;">Frequency and allocation</td>
+            <td style="padding: 8px;">2 Learning Sessions per week (One and half Hours per session)</td>
+          </tr>
+          <tr>
+            <td style="padding: 8px;">Program Duration</td>
+            <td style="padding: 8px;">26 weeks</td>
+          </tr>
+          <tr>
+            <td style="padding: 8px;">Incubation model</td>
+            <td style="padding: 8px;">Weekly hands-on task + Capstone Project</td>
+          </tr>
+          <tr>
+            <td style="padding: 8px;">Reg. Closing Date</td>
+            <td style="padding: 8px;">Applications and Registrations close Midnight (WAT) January 31st 2025</td>
+          </tr>
+          <tr>
+            <td style="padding: 8px;">Other Info</td>
+            <td style="padding: 8px;">Skillonline will send your login credentials to the LMS on the 2nd of February 2025.</td>
+          </tr>
+        </tbody>
+      </table>
+            `,
 
             attachments: [
                 {
@@ -59,20 +100,20 @@ class OfferEmail {
     public async sendRegistrationEmailWithoutAttachment(userData: RegistrationData) {
         const transporter = await this.createEmailTransport();
         const mailOptions = {
-            from: process.env.EMAIL_FROM,
+            from: process.env.SMTP_USER,
             to: userData.email,
             subject: 'Registration Successful',
-            html: `
-                <h1>Welcome, ${userData.firstName}!</h1>
-                <h2>Below are Your Onboarding Details...</h2>
-                <p>Online Course sessions starts on Monday, February 3rd 2025</p>
-                <p>Fully Virtual Class</p>
-                <p>2 Learning Sessions Per Week (1 and half Hour per session)</p>
-                <p>6 Months duration (26weeks)</p>
-                <p>Weekly hands-on task + Capstone Project</p>
-                <p>Application form Registration closes Midnight (WAT), January 31st 2025</p>
-                <p>Skillonline will Send Your Login Credentials to your LMS between the 30the and 2nd of February 2025</p>
-      `
+            html: `<span>Dear, </span> <strong> ${userData.firstName} ${userData.lastName},</strong>
+
+
+            <p>Thank you for registering with us!</p>
+            
+            <p>We are excited that you have taken this milestone step towards acquiring you tech emerging skill. We are currently processing your application so you'll receive your admission letter and your onboarding details shortly.</p>
+            
+            <p>Signed,</p>
+            <br/>
+            <br/>
+            <p>SkillOnline ETSAP Onboarding team</p>`
         };
 
         try {
@@ -85,4 +126,20 @@ class OfferEmail {
     }
 }
 
+/*         const mailOptions = {
+            from: process.env.EMAIL_FROM,
+            to: userData.email,
+            subject: 'Registration Successful',
+            html: `
+                <h1>Welcome, ${userData.firstName}!</h1>
+                <h2>Below are Your Onboarding Details...</h2>
+                <p>Online Course sessions starts on Monday, February 3rd 2025</p>
+                <p>Fully Virtual Class</p>
+                <p>2 Learning Sessions Per Week (1 and half Hour per session)</p>
+                <p>6 Months duration (26weeks)</p>
+                <p>Weekly hands-on task + Capstone Project</p>
+                <p>Application form Registration closes Midnight (WAT), January 31st 2025</p>
+                <p>Skillonline will Send Your Login Credentials to your LMS between the 30th and 2nd of February 2025</p>
+      `
+        }; */
 export default OfferEmail;

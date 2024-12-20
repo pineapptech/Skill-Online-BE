@@ -41,6 +41,10 @@ const userSchema = new Schema<IUser>(
             type: String,
             trim: true
         },
+        address: {
+            type: String,
+            trim: true
+        },
         passportId: {
             type: String,
             trim: true

@@ -35,6 +35,7 @@ class AttachmentEmailController {
                 const city = user.city;
                 const regNo = user.regNo;
                 const phone = user.phone;
+                const address = user.address;
                 const payment = yield payment_model_1.Payment.findOne({ email: user.email });
                 if ((payment === null || payment === void 0 ? void 0 : payment.email) === user.email && (payment === null || payment === void 0 ? void 0 : payment.status) === 'success') {
                     yield this.offerEmail.sendRegistrationEmailWithAttachment({
@@ -44,11 +45,18 @@ class AttachmentEmailController {
                         course,
                         city,
                         regNo,
-                        phone
+                        phone,
+                        address
                     });
                     res.status(200).json({
                         status: true,
                         message: 'Email Offer Letter Sent successfully...'
+                    });
+                }
+                else {
+                    res.status(400).json({
+                        status: false,
+                        message: 'Payment not successful Kindly make payment to get your offer letter'
                     });
                 }
             }
