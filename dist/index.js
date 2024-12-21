@@ -18,12 +18,19 @@ const app = (0, express_1.default)();
 const port = process.env.PORT || 3000;
 app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({ extended: true }));
+const allowedOrigins = ['http://localhost:3000', 'https://etsapsfrica.com'];
 const corsOptions = {
-    origin: process.env.CORS_ORIGIN || '*',
+    origin: (origin, callback) => {
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        }
+        else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'Access-Control-Allow-Origin', 'X-Requested-With'],
-    credentials: true,
-    maxAge: 86400
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+    credentials: true
 };
 app.use((0, cors_1.default)(corsOptions));
 app.use('/api/v1/auth', user_route_1.default);
