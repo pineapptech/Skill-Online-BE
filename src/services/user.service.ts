@@ -4,6 +4,8 @@ import IUser from '../interfaces/user.interface';
 import fs from 'fs';
 import User from '../models/user.model';
 import generateIdentifier from '../utils/generate-regno';
+import IContact from '../interfaces/contact.interface';
+import Contact from '../models/contact.model';
 
 export class UserService {
     public createUser = async (
@@ -75,6 +77,19 @@ export class UserService {
     public getUsers = async (): Promise<IUser[]> => {
         const user = await User.find();
         return user;
+    };
+
+    public sendContactMessage = async (userData: IContact) => {
+        const { name, email, message } = userData;
+        if (!name || !email || !message) {
+            throw new Error('All Fields are required');
+        }
+        const contact = await Contact.create({
+            name,
+            email,
+            message
+        });
+        return contact;
     };
 }
 

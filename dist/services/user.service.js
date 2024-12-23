@@ -18,6 +18,7 @@ const cloudinary_1 = __importDefault(require("../config/cloudinary"));
 const fs_1 = __importDefault(require("fs"));
 const user_model_1 = __importDefault(require("../models/user.model"));
 const generate_regno_1 = __importDefault(require("../utils/generate-regno"));
+const contact_model_1 = __importDefault(require("../models/contact.model"));
 class UserService {
     constructor() {
         this.createUser = (file, firstName, lastName, email, phone, course, city, address, userData) => __awaiter(this, void 0, void 0, function* () {
@@ -65,6 +66,18 @@ class UserService {
         this.getUsers = () => __awaiter(this, void 0, void 0, function* () {
             const user = yield user_model_1.default.find();
             return user;
+        });
+        this.sendContactMessage = (userData) => __awaiter(this, void 0, void 0, function* () {
+            const { name, email, message } = userData;
+            if (!name || !email || !message) {
+                throw new Error('All Fields are required');
+            }
+            const contact = yield contact_model_1.default.create({
+                name,
+                email,
+                message
+            });
+            return contact;
         });
     }
 }

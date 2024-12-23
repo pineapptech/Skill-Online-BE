@@ -160,18 +160,3 @@ export default RegistrationController;
 
 
  */
-class Bird {
-    fly() {
-        console.log('This bird is flying!');
-    }
-}
-class Plane {
-    fly() {
-        console.log('This plane is flying!');
-    }
-}
-// Usage
-const bird = new Bird();
-bird.fly(); // Output: This bird is flying!
-const plane = new Plane();
-plane.fly(); // Output: This plane is flying!

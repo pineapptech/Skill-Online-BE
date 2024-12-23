@@ -6,6 +6,7 @@ import OfferEmail from '../emails/offer-letter.email';
 import User from '../models/user.model';
 import { Payment } from '../models/payment.model';
 import { log } from 'console';
+import IContact from '../interfaces/contact.interface';
 configDotenv();
 
 export interface RegistrationData {
@@ -18,7 +19,11 @@ export interface RegistrationData {
     phone: string;
     address: string;
 }
-
+export interface messageData {
+    name: string;
+    email: string;
+    message: string;
+}
 class RegistrationController {
     private userService: UserService;
     private offerEmail: OfferEmail;
