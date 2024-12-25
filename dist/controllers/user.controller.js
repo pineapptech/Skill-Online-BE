@@ -19,13 +19,9 @@ var __rest = (this && this.__rest) || function (s, e) {
         }
     return t;
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 const dotenv_1 = require("dotenv");
 const user_schema_1 = require("../utils/user-schema");
-const user_model_1 = __importDefault(require("../models/user.model"));
 const payment_model_1 = require("../models/payment.model");
 const console_1 = require("console");
 (0, dotenv_1.configDotenv)();
@@ -69,14 +65,14 @@ class RegistrationController {
                 }
                 const { firstName, lastName, email, phone, course, city, regNo, address } = validatedData, otherData = __rest(validatedData, ["firstName", "lastName", "email", "phone", "course", "city", "regNo", "address"]);
                 (0, console_1.log)(regNo);
-                const emailExists = yield user_model_1.default.findOne({ email });
-                if (emailExists) {
-                    res.status(400).json({
-                        status: false,
-                        message: 'Email already exists'
-                    });
-                    return;
-                }
+                // const emailExists = await User.findOne({ email });
+                // if (emailExists) {
+                //     res.status(400).json({
+                //         status: false,
+                //         message: 'Email already exists'
+                //     });
+                //     return;
+                // }
                 const newUser = yield this.userService.createUser(req.file, firstName, lastName, email, phone, course, city, address, otherData);
                 if (newUser) {
                     yield this.offerEmail.sendRegistrationEmailWithoutAttachment({ firstName, email, lastName, phone, course, city, regNo, address });

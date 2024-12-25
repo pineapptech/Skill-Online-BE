@@ -50,14 +50,14 @@ class RegistrationController {
 
             const { firstName, lastName, email, phone, course, city, regNo, address, ...otherData } = validatedData;
             log(regNo);
-            const emailExists = await User.findOne({ email });
-            if (emailExists) {
-                res.status(400).json({
-                    status: false,
-                    message: 'Email already exists'
-                });
-                return;
-            }
+            // const emailExists = await User.findOne({ email });
+            // if (emailExists) {
+            //     res.status(400).json({
+            //         status: false,
+            //         message: 'Email already exists'
+            //     });
+            //     return;
+            // }
 
             const newUser = await this.userService.createUser(req.file, firstName, lastName, email, phone, course, city, address, otherData);
 
