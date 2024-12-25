@@ -11,18 +11,24 @@ class UploadMiddleWare {
     });
 
     private fileFilter = (req: any, file: Express.Multer.File, cb: multer.FileFilterCallback) => {
-        const allowedMimes = ['image/png', 'image/jpg', 'image/jpeg'];
+        const allowedMimes = [
+            'image/png',
+            'image/jpg',
+            'image/jpeg',
+            'application/pdf' // Added PDF MIME type
+        ];
+
         if (allowedMimes.includes(file.mimetype)) {
             cb(null, true);
         } else {
-            cb(new Error('Invalid file type. Only JPEG, PNG  are allowed'));
+            cb(new Error('Invalid file type. Only JPEG, PNG, and PDF files are allowed'));
         }
     };
 
     public upload = multer({
         storage: this.storage,
         limits: {
-            fileSize: 5 * 1024 * 1024 // 24
+            fileSize: 5 * 1024 * 1024 // 5MB file size limit
         },
         fileFilter: this.fileFilter
     });

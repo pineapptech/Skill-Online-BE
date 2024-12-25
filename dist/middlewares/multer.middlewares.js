@@ -15,18 +15,23 @@ class UploadMiddleWare {
             }
         });
         this.fileFilter = (req, file, cb) => {
-            const allowedMimes = ['image/png', 'image/jpg', 'image/jpeg'];
+            const allowedMimes = [
+                'image/png',
+                'image/jpg',
+                'image/jpeg',
+                'application/pdf' // Added PDF MIME type
+            ];
             if (allowedMimes.includes(file.mimetype)) {
                 cb(null, true);
             }
             else {
-                cb(new Error('Invalid file type. Only JPEG, PNG  are allowed'));
+                cb(new Error('Invalid file type. Only JPEG, PNG, and PDF files are allowed'));
             }
         };
         this.upload = (0, multer_1.default)({
             storage: this.storage,
             limits: {
-                fileSize: 5 * 1024 * 1024 // 24
+                fileSize: 5 * 1024 * 1024 // 5MB file size limit
             },
             fileFilter: this.fileFilter
         });
