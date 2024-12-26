@@ -18,20 +18,19 @@ const app = (0, express_1.default)();
 const port = process.env.PORT || 3000;
 app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({ extended: true }));
-const allowedOrigins = ['http://localhost:3000', 'https://etsapsfrica.com', 'https://www.etsapsfrica.com'];
-const corsOptions = {
-    origin: (origin, callback) => {
-        if (!origin || allowedOrigins.includes(origin)) {
-            callback(null, true);
-        }
-        else {
-            callback(new Error('Not allowed by CORS'));
-        }
-    },
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
-};
-app.use((0, cors_1.default)(corsOptions));
+// const allowedOrigins = ['http://localhost:3000', 'https://etsapsfrica.com', 'https://www.etsapsfrica.com'];
+// const corsOptions: cors.CorsOptions = {
+//     origin: (origin: string | undefined, callback: (error: Error | null, allow?: boolean) => void) => {
+//         if (!origin || allowedOrigins.includes(origin)) {
+//             callback(null, true);
+//         } else {
+//             callback(new Error('Not allowed by CORS'));
+//         }
+//     },
+//     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+//     allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
+// };
+app.use((0, cors_1.default)());
 app.use('/api/v1/auth', user_route_1.default);
 app.use('/api', payment_route_1.default);
 app.use('/api/v1/attachment', attached_email_route_1.default);

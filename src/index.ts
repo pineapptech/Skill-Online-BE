@@ -16,21 +16,21 @@ const port = process.env.PORT || 3000;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-const allowedOrigins = ['http://localhost:3000', 'https://etsapsfrica.com', 'https://www.etsapsfrica.com'];
+// const allowedOrigins = ['http://localhost:3000', 'https://etsapsfrica.com', 'https://www.etsapsfrica.com'];
 
-const corsOptions: cors.CorsOptions = {
-    origin: (origin: string | undefined, callback: (error: Error | null, allow?: boolean) => void) => {
-        if (!origin || allowedOrigins.includes(origin)) {
-            callback(null, true);
-        } else {
-            callback(new Error('Not allowed by CORS'));
-        }
-    },
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
-};
+// const corsOptions: cors.CorsOptions = {
+//     origin: (origin: string | undefined, callback: (error: Error | null, allow?: boolean) => void) => {
+//         if (!origin || allowedOrigins.includes(origin)) {
+//             callback(null, true);
+//         } else {
+//             callback(new Error('Not allowed by CORS'));
+//         }
+//     },
+//     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+//     allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
+// };
 
-app.use(cors(corsOptions));
+app.use(cors());
 
 app.use('/api/v1/auth', router);
 app.use('/api', paymentRouter);
