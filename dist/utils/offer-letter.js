@@ -102,7 +102,7 @@ class OfferLetterGenerator {
 
           This is to inform you that Skillonline Srl on behalf of this Consortium (INTERTEK, ACCREDIA, CIRPS, IBI), after the evaluation of your application to undergo an online professional certification course, has offered you admission to study ${userData.course}
 
-          The program which has a duration of six months will commence on the 3rd of February, 2025. We are excited to have you join our community of learners and look forward to supporting your journey towards achieving professional excellence in this field. 
+          The program which has a duration of six months will commence on the 3rd of March, 2025. We are excited to have you join our community of learners and look forward to supporting your journey towards achieving professional excellence in this field. 
           
           As part of your admission onboarding, further details regarding the enrollment process, course schedule and program requirements are enclosed separately, in this email to you. Please confirm your acceptance of this offer by replying this email with the line “ I accept this offer” within 72 hours of receipt of this email.
 

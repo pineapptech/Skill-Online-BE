@@ -58,7 +58,7 @@ class OfferEmail {
         <tbody>
           <tr>
             <td style="padding: 8px;">Start Date</td>
-            <td style="padding: 8px;">Online Course Sessions start Monday February 3rd 2025</td>
+            <td style="padding: 8px;">Online Course Sessions start Monday March 3rd 2025</td>
           </tr>
           <tr>
             <td style="padding: 8px;">Learning Model</td>
