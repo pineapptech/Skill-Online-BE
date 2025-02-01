@@ -19,7 +19,7 @@ export class PayStackService implements IPaymentService {
                 {
                     amount: amount * 100, // Convert to kobo/cents
                     email,
-                    callback_url: 'https://etsap-fe.vercel.app/success'
+                    callback_url: 'https://etsapsfrica.com/success'
                 },
                 {
                     headers: {

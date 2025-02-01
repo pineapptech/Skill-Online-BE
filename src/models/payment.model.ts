@@ -10,7 +10,8 @@ const PaymentSchema = new mongoose.Schema<IPayment>(
         },
         email: {
             type: String,
-            required: true
+            required: true,
+            lowercase: true
         },
 
         amount: {

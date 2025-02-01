@@ -17,7 +17,8 @@ const userSchema = new Schema<IUser>(
         },
         email: {
             type: String,
-            trim: true
+            trim: true,
+            lowercase: true
             // unique: true
         },
         regNo: {
