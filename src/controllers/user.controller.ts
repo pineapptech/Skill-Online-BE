@@ -121,6 +121,36 @@ class RegistrationController {
             data: user
         });
     };
+
+    public getUserEmail = async (req: Request, res: Response) => {
+        try {
+            const email = req.body.email as string;
+            if (!email) {
+                res.status(400).json({
+                    status: false,
+                    message: 'Email is required'
+                });
+                return;
+            }
+            const emailExists = await this.userService.getAUserEmail(email);
+            if (!emailExists) {
+                res.status(404).json({
+                    status: false,
+                    message: 'Email not found'
+                });
+                return;
+            }
+            res.status(200).json({
+                status: true,
+                data: emailExists
+            });
+        } catch (error: any) {
+            res.status(500).json({
+                error: 'An error occurred',
+                message: error.message
+            });
+        }
+    };
 }
 
 export default RegistrationController;

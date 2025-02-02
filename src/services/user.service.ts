@@ -91,6 +91,11 @@ export class UserService {
         });
         return contact;
     };
+
+    public getAUserEmail = async (email: string) => {
+        const emailExists = await User.findOne({ email });
+        return emailExists;
+    };
 }
 
 export default UserService;
