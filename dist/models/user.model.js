@@ -16,7 +16,8 @@ const userSchema = new mongoose_1.Schema({
     },
     email: {
         type: String,
-        trim: true
+        trim: true,
+        lowercase: true
         // unique: true
     },
     regNo: {

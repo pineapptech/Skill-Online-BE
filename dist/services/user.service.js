@@ -79,6 +79,10 @@ class UserService {
             });
             return contact;
         });
+        this.getAUserEmail = (email) => __awaiter(this, void 0, void 0, function* () {
+            const emailExists = yield user_model_1.default.findOne({ email });
+            return emailExists;
+        });
     }
 }
 exports.UserService = UserService;

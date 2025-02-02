@@ -49,6 +49,36 @@ class RegistrationController {
                 data: user
             });
         });
+        this.getUserEmail = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                const email = req.body.email;
+                if (!email) {
+                    res.status(400).json({
+                        status: false,
+                        message: 'Email is required'
+                    });
+                    return;
+                }
+                const emailExists = yield this.userService.getAUserEmail(email);
+                if (!emailExists) {
+                    res.status(404).json({
+                        status: false,
+                        message: 'Email not found'
+                    });
+                    return;
+                }
+                res.status(200).json({
+                    status: true,
+                    data: emailExists
+                });
+            }
+            catch (error) {
+                res.status(500).json({
+                    error: 'An error occurred',
+                    message: error.message
+                });
+            }
+        });
         this.userService = userService;
         this.offerEmail = offerEmail;
     }

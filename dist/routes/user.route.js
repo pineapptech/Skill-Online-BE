@@ -20,5 +20,6 @@ const registrationController = new user_controller_1.default(userService, offerE
 router.post('/register', multer_middlewares_1.default.upload.single('file'), (req, res) => registrationController.registerUser(req, res));
 router.delete('/delete', registrationController.deleteUsers);
 router.get('/get-users', registrationController.getUsers);
+router.get('/get-user', registrationController.getUserEmail);
 router.get('/generate-regno', (req, res) => console.log((0, generate_regno_1.default)('Cyber Security')));
 exports.default = router;

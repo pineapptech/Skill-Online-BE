@@ -13,7 +13,8 @@ const PaymentSchema = new mongoose_1.default.Schema({
     },
     email: {
         type: String,
-        required: true
+        required: true,
+        lowercase: true
     },
     amount: {
         type: Number,
