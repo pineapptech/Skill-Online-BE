@@ -78,11 +78,11 @@ class OfferEmail {
           </tr>
           <tr>
             <td style="padding: 8px;">Reg. Closing Date</td>
-            <td style="padding: 8px;">Applications and Registrations close Midnight (WAT) January 31st 2025</td>
+            <td style="padding: 8px;">Applications and Registrations close Midnight (WAT) March 2nd 2025</td>
           </tr>
           <tr>
             <td style="padding: 8px;">Other Info</td>
-            <td style="padding: 8px;">Skillonline will send your login credentials to the LMS on the 2nd of February 2025.</td>
+            <td style="padding: 8px;">Skillonline will send your login credentials to the LMS on the 2nd of March 2025.</td>
           </tr>
         </tbody>
       </table>

@@ -22,7 +22,6 @@ var __rest = (this && this.__rest) || function (s, e) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const dotenv_1 = require("dotenv");
 const user_schema_1 = require("../utils/user-schema");
-const payment_model_1 = require("../models/payment.model");
 const console_1 = require("console");
 (0, dotenv_1.configDotenv)();
 class RegistrationController {
@@ -114,12 +113,12 @@ class RegistrationController {
                             email: newUser.email
                         }
                     });
-                    setTimeout(() => __awaiter(this, void 0, void 0, function* () {
-                        const payment = yield payment_model_1.Payment.findOne({ email: newUser.email });
-                        if ((payment === null || payment === void 0 ? void 0 : payment.status) === 'success') {
-                            yield this.offerEmail.sendRegistrationEmailWithAttachment({ firstName, email, lastName, phone, course, city, regNo, address });
-                        }
-                    }), 5000);
+                    // setTimeout(async () => {
+                    //     const payment = await Payment.findOne({ email: newUser.email });
+                    //     if (payment?.status === 'success') {
+                    //         await this.offerEmail.sendRegistrationEmailWithAttachment({ firstName, email, lastName, phone, course, city, regNo, address });
+                    //     }
+                    // }, 5000);
                 }
             }
             catch (error) {
