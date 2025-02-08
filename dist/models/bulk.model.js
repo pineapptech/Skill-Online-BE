@@ -19,7 +19,7 @@ const bulkAdminSchema = new mongoose_1.Schema({
         unique: true,
         default: 'BULK/EN/0024'
     },
-    bulkName: {
+    province: {
         type: String,
         required: true
     }

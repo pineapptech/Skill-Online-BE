@@ -7,7 +7,7 @@ class BulkAdminController {
         try {
             const body: IBulkAdmin = req.body;
 
-            if (!body.email || !body.fullname || !body.bulkName) {
+            if (!body.email || !body.fullname || !body.province) {
                 res.status(400).json({
                     status: false,
                     message: 'All fields are required'
@@ -22,7 +22,7 @@ class BulkAdminController {
                     { email: body.email },
                     {
                         fullname: body.fullname,
-                        bulkName: body.bulkName,
+                        bulkName: body.province,
                         bulkId: body.bulkId
                     },
                     { new: true }

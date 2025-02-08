@@ -20,7 +20,7 @@ const bulkAdminSchema = new Schema<IBulkAdmin>(
             unique: true,
             default: 'BULK/EN/0024'
         },
-        bulkName: {
+        province: {
             type: String,
             required: true
         }

@@ -18,7 +18,7 @@ class BulkAdminController {
         this.createBulkAdmin = (req, res) => __awaiter(this, void 0, void 0, function* () {
             try {
                 const body = req.body;
-                if (!body.email || !body.fullname || !body.bulkName) {
+                if (!body.email || !body.fullname || !body.province) {
                     res.status(400).json({
                         status: false,
                         message: 'All fields are required'
@@ -29,7 +29,7 @@ class BulkAdminController {
                 if (checkEmail) {
                     const updatedAdmin = yield bulk_model_1.default.findOneAndUpdate({ email: body.email }, {
                         fullname: body.fullname,
-                        bulkName: body.bulkName,
+                        bulkName: body.province,
                         bulkId: body.bulkId
                     }, { new: true });
                     res.status(200).json({
