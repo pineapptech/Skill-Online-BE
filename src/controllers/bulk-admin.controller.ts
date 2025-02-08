@@ -22,7 +22,7 @@ class BulkAdminController {
                     { email: body.email },
                     {
                         fullname: body.fullname,
-                        bulkName: body.province,
+                        province: body.province,
                         bulkId: body.bulkId
                     },
                     { new: true }

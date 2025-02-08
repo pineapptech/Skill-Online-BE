@@ -29,7 +29,7 @@ class BulkAdminController {
                 if (checkEmail) {
                     const updatedAdmin = yield bulk_model_1.default.findOneAndUpdate({ email: body.email }, {
                         fullname: body.fullname,
-                        bulkName: body.province,
+                        province: body.province,
                         bulkId: body.bulkId
                     }, { new: true });
                     res.status(200).json({
