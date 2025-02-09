@@ -19,11 +19,7 @@ export interface RegistrationData {
     phone: string;
     address: string;
 }
-export interface messageData {
-    name: string;
-    email: string;
-    message: string;
-}
+
 class RegistrationController {
     private userService: UserService;
     private offerEmail: OfferEmail;

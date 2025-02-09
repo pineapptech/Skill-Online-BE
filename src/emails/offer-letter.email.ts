@@ -1,6 +1,6 @@
 import nodemailer from 'nodemailer';
 import { configDotenv } from 'dotenv';
-import { messageData, RegistrationData } from '../controllers/user.controller';
+import { RegistrationData } from '../controllers/user.controller';
 import OfferLetterGenerator from '../utils/offer-letter';
 
 configDotenv();
@@ -128,27 +128,6 @@ class OfferEmail {
             throw error;
         }
     }
-
-    /*   public async sendContactMessage(userData: messageData) {
-        const transporter = await this.createEmailTransport();
-        const mailOptions = {
-            from: process.env.SMTP_USER,
-            to: userData.email,
-            subject: 'Contact Us',
-            html: `<h1>${userData.message}</h1>
-
-            <button style="background-color: purple; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;"> <a style="color: white; text-decoration: none;" href="https://join.slack.com/t/emergingtechs-n0f7312/shared_invite/zt-2v8mgnt2t-8P6E3O0T4pj2xMfNWpmkBQ">Link To Join the Slack Channel</a></button>
-            `
-        };
-
-        try {
-            const info = await transporter.sendMail(mailOptions);
-            console.log('Email Sent Successfully...', info.response);
-        } catch (error) {
-            console.error('Email Sending Failed', error);
-            throw error;
-        }
-    } */
 }
 
 /*         const mailOptions = {

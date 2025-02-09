@@ -22,6 +22,10 @@ const bulkAdminSchema = new mongoose_1.Schema({
     province: {
         type: String,
         required: true
+    },
+    status: {
+        type: Boolean,
+        default: false
     }
 }, {
     timestamps: true,

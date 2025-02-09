@@ -5,6 +5,7 @@ interface IBulkAdmin extends Document {
     email: string;
     bulkId: string;
     province: string;
+    status: boolean;
 }
 
 export default IBulkAdmin;

@@ -8,5 +8,6 @@ const userBulkController = new UserBulkController();
 
 bulkAdminRouter.post('/create', bulkAdminController.createBulkAdmin);
 bulkAdminRouter.post('/create-user', userBulkController.createUser);
+bulkAdminRouter.patch('/change-status', bulkAdminController.updateAdminStatus);
 
 export default bulkAdminRouter;

@@ -31,8 +31,16 @@ class UserBulkController {
                     });
                     return;
                 }
-                const id = bulkAdmin === null || bulkAdmin === void 0 ? void 0 : bulkAdmin._id;
-                const bulkId = bulkAdmin === null || bulkAdmin === void 0 ? void 0 : bulkAdmin.bulkId;
+                const adminStatus = bulkAdmin.status;
+                if (adminStatus === false) {
+                    res.status(403).json({
+                        status: false,
+                        message: 'UNVERIFIED ADMIN ACCOUNT'
+                    });
+                    return;
+                }
+                const id = bulkAdmin._id;
+                const bulkId = bulkAdmin.bulkId;
                 if (userInfo.bulkId !== bulkId) {
                     res.status(403).json({
                         status: false,
@@ -47,7 +55,7 @@ class UserBulkController {
                 res.status(201).json({
                     status: true,
                     message: 'User created successfully',
-                    data: validatedData
+                    data: bulkUser
                 });
             }
             catch (error) {

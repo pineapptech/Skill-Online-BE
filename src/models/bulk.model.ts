@@ -23,6 +23,10 @@ const bulkAdminSchema = new Schema<IBulkAdmin>(
         province: {
             type: String,
             required: true
+        },
+        status: {
+            type: Boolean,
+            default: false
         }
     },
     {

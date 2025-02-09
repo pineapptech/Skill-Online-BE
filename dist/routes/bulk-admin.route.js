@@ -11,4 +11,5 @@ const bulkAdminController = new bulk_admin_controller_1.default();
 const userBulkController = new user_bulk_controller_1.UserBulkController();
 bulkAdminRouter.post('/create', bulkAdminController.createBulkAdmin);
 bulkAdminRouter.post('/create-user', userBulkController.createUser);
+bulkAdminRouter.patch('/change-status', bulkAdminController.updateAdminStatus);
 exports.default = bulkAdminRouter;
