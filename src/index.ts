@@ -8,6 +8,7 @@ import cors from 'cors';
 import attachedRouter from './routes/attached-email.route';
 import { globalError } from './errors/global.error';
 import bulkAdminRouter from './routes/bulk-admin.route';
+import cookieParser from 'cookie-parser';
 
 configDotenv();
 connectDB();
@@ -32,6 +33,7 @@ app.use(express.urlencoded({ extended: true }));
 // };
 
 app.use(cors());
+app.use(cookieParser());
 
 app.use('/api/v1/auth', router);
 app.use('/api', paymentRouter);

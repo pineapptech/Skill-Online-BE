@@ -13,11 +13,18 @@ const bulkAdminSchema = new mongoose_1.Schema({
         trim: true,
         lowercase: true
     },
-    bulkId: {
+    password: {
         type: String,
         required: true,
-        unique: true,
-        default: 'BULK/EN/0024'
+        trim: true
+    },
+    phone: {
+        type: String,
+        required: true
+    },
+    bulkId: {
+        type: String,
+        unique: true
     },
     province: {
         type: String,
@@ -31,5 +38,5 @@ const bulkAdminSchema = new mongoose_1.Schema({
     timestamps: true,
     versionKey: false
 });
-const BulkAdmin = (0, mongoose_1.model)('bulk', bulkAdminSchema);
+const BulkAdmin = (0, mongoose_1.model)('bulk-admin', bulkAdminSchema);
 exports.default = BulkAdmin;

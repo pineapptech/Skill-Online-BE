@@ -13,7 +13,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.BulkAdminService = void 0;
+const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const bulk_model_1 = __importDefault(require("../models/bulk.model"));
+const user_bulk_model_1 = __importDefault(require("../models/user-bulk.model"));
 class BulkAdminService {
     constructor() {
         this.createBulkAdmin = (bulkAdminInfo) => __awaiter(this, void 0, void 0, function* () {
@@ -32,6 +34,21 @@ class BulkAdminService {
                 return false;
             }
             return adminStatus;
+        });
+        this.loginAdmin = (email, password) => __awaiter(this, void 0, void 0, function* () {
+            const user = yield bulk_model_1.default.findOne({ email });
+            if (!user) {
+                throw new Error(`User not found`);
+            }
+            const validPassword = bcryptjs_1.default.compareSync(password, user.password);
+            if (!validPassword) {
+                throw new Error(`Invalid Credentials Provided...`);
+            }
+            return user;
+        });
+        this.countPeopleInProvince = (province) => __awaiter(this, void 0, void 0, function* () {
+            const count = yield user_bulk_model_1.default.countDocuments({ province });
+            return count;
         });
     }
 }

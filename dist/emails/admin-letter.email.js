@@ -62,5 +62,77 @@ class AdminLetter {
             }
         });
     }
+    notifySupperAdmins(adminData) {
+        return __awaiter(this, void 0, void 0, function* () {
+            var _a;
+            const transporter = yield this.createEmailTransport();
+            const mailOptions = {
+                from: process.env.SMTP_USER,
+                to: ['chidubemanowor@gmail.com', 'graciousobeagu@gmail.com', 'jjustinalexx@gmail.com'],
+                subject: 'New Admin Registration - Activation Required',
+                html: `<b>Hello Super Admin</b>,
+    
+                <p>A new admin has just registered on the platform. Please review their details and activate their account if necessary.</p>
+    
+                <b>Admin Details:</b>
+                
+                <p><b>Fullname: </b> ${adminData.fullname}</p>
+                <p><b>Email: </b> ${(_a = adminData.email) === null || _a === void 0 ? void 0 : _a.toLowerCase()}</p>
+
+               
+                <p>Best regards,</p>
+                <p>SkillOnline ETSAP Onboarding team</p>
+                `
+            };
+            try {
+                const info = yield transporter.sendMail(mailOptions);
+                console.log('Email Sent Successfully...', info.response);
+            }
+            catch (error) {
+                console.error('Email Sending Failed', error);
+                throw error;
+            }
+        });
+    }
+    supperAdminsPayment(adminData) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const transporter = yield this.createEmailTransport();
+            const mailOptions = {
+                from: process.env.SMTP_USER,
+                to: adminData.email,
+                subject: 'Your Registration Summary & Payment Details 💰',
+                html: `<b>Hello ${adminData.fullname}</b>,
+    
+                <p>Congratulations! Your admin account has been successfully activated. Now, let’s talk business.</p>
+    
+                <b>Here’s the summary of your registered users so far:</b>
+                
+                <p><b>👥 Total Registrations:  </b> ${adminData.count}</p>
+                <p><b>💵 Total Amount to Pay: </b> ${adminData.yourFee}</p>
+                
+                <p><b>🏦 Payment Details:</b></p>
+                <ul>
+                    <li><b>Bank Name: </b> ZENITH BANK</li>
+                    <li><b>Account Name:</b> IBRI-EUREKA EDU PROJECT AFRICA</li>
+                    <li><b>Account Number: </b> 5072153472</li>
+                </ul>
+               
+                <p> We’re excited to have you on board, and we know you love smooth operations—so let’s keep things seamless. Kindly make the payment to activate your users and get things rolling.</p>
+
+                <p>Got any questions? We’re just an email away! 📩 </p>
+                <p>Cheers,</p>
+                <p>SkillOnline ETSAP Onboarding team</p>
+                `
+            };
+            try {
+                const info = yield transporter.sendMail(mailOptions);
+                console.log('Email Sent Successfully...', info.response);
+            }
+            catch (error) {
+                console.error('Email Sending Failed', error);
+                throw error;
+            }
+        });
+    }
 }
 exports.AdminLetter = AdminLetter;

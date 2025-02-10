@@ -13,6 +13,7 @@ const cors_1 = __importDefault(require("cors"));
 const attached_email_route_1 = __importDefault(require("./routes/attached-email.route"));
 const global_error_1 = require("./errors/global.error");
 const bulk_admin_route_1 = __importDefault(require("./routes/bulk-admin.route"));
+const cookie_parser_1 = __importDefault(require("cookie-parser"));
 (0, dotenv_1.configDotenv)();
 (0, db_1.default)();
 const app = (0, express_1.default)();
@@ -32,6 +33,7 @@ app.use(express_1.default.urlencoded({ extended: true }));
 //     allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
 // };
 app.use((0, cors_1.default)());
+app.use((0, cookie_parser_1.default)());
 app.use('/api/v1/auth', user_route_1.default);
 app.use('/api', payment_route_1.default);
 app.use('/api/v1/attachment', attached_email_route_1.default);

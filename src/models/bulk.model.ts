@@ -14,11 +14,18 @@ const bulkAdminSchema = new Schema<IBulkAdmin>(
             trim: true,
             lowercase: true
         },
-        bulkId: {
+        password: {
             type: String,
             required: true,
-            unique: true,
-            default: 'BULK/EN/0024'
+            trim: true
+        },
+        phone: {
+            type: String,
+            required: true
+        },
+        bulkId: {
+            type: String,
+            unique: true
         },
         province: {
             type: String,
@@ -35,6 +42,6 @@ const bulkAdminSchema = new Schema<IBulkAdmin>(
     }
 );
 
-const BulkAdmin = model<IBulkAdmin>('bulk', bulkAdminSchema);
+const BulkAdmin = model<IBulkAdmin>('bulk-admin', bulkAdminSchema);
 
 export default BulkAdmin;
