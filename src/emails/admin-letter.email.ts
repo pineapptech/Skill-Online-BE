@@ -91,8 +91,10 @@ export class AdminLetter {
             subject: 'Your Registration Summary & Payment Details 💰',
             html: `<b>Hello ${adminData.fullname}</b>,
     
-                <p>Congratulations! Your admin account has been successfully activated. Now, let’s talk business.</p>
-    
+                <p>Congratulations! Your admin account has created proxy accounts successfully!</p>
+                
+                <p>Now, let’s finish the onboarding! </p>
+                
                 <b>Here’s the summary of your registered users so far:</b>
                 
                 <p><b>👥 Total Registrations:  </b> ${adminData.count}</p>
