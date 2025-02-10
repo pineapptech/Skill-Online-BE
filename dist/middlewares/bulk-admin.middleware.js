@@ -14,10 +14,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const bulk_model_1 = __importDefault(require("../models/bulk.model"));
+const console_1 = require("console");
 const verifyToken = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         // Check for token in cookies
         const token = req.cookies.jwt;
+        (0, console_1.log)(token);
         // If no token is present
         if (!token) {
             res.status(401).json({
