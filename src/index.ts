@@ -32,8 +32,8 @@ app.use(express.urlencoded({ extended: true }));
 //     allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
 // };
 
-app.use(cors());
 app.use(cookieParser());
+app.use(cors());
 
 app.use('/api/v1/auth', router);
 app.use('/api', paymentRouter);
