@@ -163,23 +163,15 @@ class BulkAdminController {
                     });
                     return;
                 }
-                const { province } = req.body;
-                if (!province) {
-                    res.status(400).json({
-                        status: false,
-                        message: 'Province must be provided'
-                    });
-                    return;
-                }
-                const adminProvince = req.user.province;
-                if (adminProvince !== province) {
-                    res.status(404).json({
-                        status: false,
-                        message: `Invalid Province Provided by the admin...`
-                    });
-                    return;
-                }
-                const count = yield this.bulkAdminService.countPeopleInProvince(province);
+                const adminDetails = {
+                    fullname: req.user.fullname,
+                    id: req.user._id,
+                    email: req.user.email,
+                    province: req.user.province,
+                    phone: req.user.phone,
+                    bulkId: req.user.bulkId
+                };
+                const count = yield this.bulkAdminService.countPeopleInProvince(adminDetails.province);
                 if (!count) {
                     res.status(404).json({
                         status: false,
@@ -194,7 +186,8 @@ class BulkAdminController {
                 res.status(200).json({
                     status: true,
                     data: `You have ${count} ${record}`,
-                    fees: `An you are required to pay ${yourFee}`
+                    fees: `An you are required to pay ${yourFee}`,
+                    adminDetails
                 });
                 const paymentDetails = yield this.adminLetter.supperAdminsPayment({ count, yourFee, email, fullname });
             }
