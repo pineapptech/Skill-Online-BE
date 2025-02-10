@@ -20,20 +20,11 @@ const app = (0, express_1.default)();
 const port = process.env.PORT || 3000;
 app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({ extended: true }));
-// const allowedOrigins = ['http://localhost:3000', 'https://etsapsfrica.com', 'https://www.etsapsfrica.com'];
-// const corsOptions: cors.CorsOptions = {
-//     origin: (origin: string | undefined, callback: (error: Error | null, allow?: boolean) => void) => {
-//         if (!origin || allowedOrigins.includes(origin)) {
-//             callback(null, true);
-//         } else {
-//             callback(new Error('Not allowed by CORS'));
-//         }
-//     },
-//     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-//     allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
-// };
 const corsOptions = {
-    origin: 'http://localhost:3000'
+    origin: 'http://localhost:3000', // Frontend URL
+    credentials: true, // Critical for cookie-based authentication
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'Cookie']
 };
 app.use((0, cookie_parser_1.default)());
 app.use((0, cors_1.default)(corsOptions));
@@ -49,3 +40,15 @@ app.use('*', (req, res, next) => {
 app.use(global_error_1.globalError);
 // app.use(globalError);
 app.listen(port, () => console.log(`Listening on ${port}`));
+// const allowedOrigins = ['http://localhost:3000', 'https://etsapsfrica.com', 'https://www.etsapsfrica.com'];
+// const corsOptions: cors.CorsOptions = {
+//     origin: (origin: string | undefined, callback: (error: Error | null, allow?: boolean) => void) => {
+//         if (!origin || allowedOrigins.includes(origin)) {
+//             callback(null, true);
+//         } else {
+//             callback(new Error('Not allowed by CORS'));
+//         }
+//     },
+//     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+//     allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
+// };
