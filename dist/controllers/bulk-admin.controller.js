@@ -18,7 +18,8 @@ const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const admin_letter_email_1 = require("../emails/admin-letter.email");
 const bulk_id_1 = require("../utils/bulk-id");
 const console_1 = require("console");
-const generateToken_utils_1 = __importDefault(require("../utils/generateToken.utils"));
+const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+// Extend Express Request
 class BulkAdminController {
     constructor() {
         this.createBulkAdmin = (req, res) => __awaiter(this, void 0, void 0, function* () {
@@ -125,25 +126,19 @@ class BulkAdminController {
             try {
                 const { email, password } = req.body;
                 if (!email || !password) {
-                    res.status(400).json({
-                        status: false,
-                        message: 'Invalid email or password'
-                    });
+                    res.status(400).json({ status: false, message: 'Invalid email or password' });
                     return;
                 }
                 const user = yield this.bulkAdminService.loginAdmin(email, password);
                 if (user.status === false) {
-                    res.status(403).json({
-                        status: false,
-                        message: `Admin Account Not Verified, Please Contact your administrator`
-                    });
+                    res.status(403).json({ status: false, message: 'Admin Account Not Verified' });
                     return;
                 }
-                const userId = user._id.toString();
-                const token = (0, generateToken_utils_1.default)(res, { _id: userId });
+                const token = jsonwebtoken_1.default.sign({ id: user._id.toString() }, process.env.SECRET_KEY, { expiresIn: '30d' });
                 res.status(200).json({
                     status: true,
-                    message: `${user.fullname} Admin, Successfully logged in`
+                    message: `${user.fullname} Admin, Successfully logged in`,
+                    token
                 });
             }
             catch (error) {
@@ -156,7 +151,8 @@ class BulkAdminController {
         });
         this.adminCount = (req, res) => __awaiter(this, void 0, void 0, function* () {
             try {
-                if (!req.user) {
+                const user = req.user;
+                if (!user) {
                     res.status(403).json({
                         status: false,
                         message: 'You must be logged in to access this page'
@@ -164,12 +160,12 @@ class BulkAdminController {
                     return;
                 }
                 const adminDetails = {
-                    fullname: req.user.fullname,
-                    id: req.user._id,
-                    email: req.user.email,
-                    province: req.user.province,
-                    phone: req.user.phone,
-                    bulkId: req.user.bulkId
+                    fullname: user.fullname,
+                    id: user._id,
+                    email: user.email,
+                    province: user.province,
+                    phone: user.phone,
+                    bulkId: user.bulkId
                 };
                 const count = yield this.bulkAdminService.countPeopleInProvince(adminDetails.province);
                 if (!count) {
@@ -181,12 +177,11 @@ class BulkAdminController {
                 }
                 const record = count > 1 ? 'records' : 'record';
                 const yourFee = count * 6000;
-                const email = req.user.email;
-                const fullname = req.user.fullname;
+                const email = user.email;
+                const fullname = user.fullname;
                 res.status(200).json({
                     status: true,
-                    data: `You have ${count} ${record}`,
-                    fees: `An you are required to pay ${yourFee}`,
+                    message: 'The Details of the Registered User Has been Sent to Mail, kindly Check it...',
                     adminDetails
                 });
                 const paymentDetails = yield this.adminLetter.supperAdminsPayment({ count, yourFee, email, fullname });

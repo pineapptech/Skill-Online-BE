@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from 'express';
+/* import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import BulkAdmin from '../models/bulk.model';
 import { log } from 'console';
@@ -75,3 +75,4 @@ const verifyToken = async (req: Request, res: Response, next: NextFunction) => {
 };
 
 export default verifyToken;
+ */

@@ -6,13 +6,16 @@ import bcrypt from 'bcryptjs';
 import { AdminLetter } from '../emails/admin-letter.email';
 import { generateBulkId } from '../utils/bulk-id';
 import { log } from 'console';
-import generateToken from '../utils/generateToken.utils';
+import jwt from 'jsonwebtoken';
+import { AdminUser } from '../interfaces/admin.interface';
 
 export interface adminInfo {
     fullname: string;
     email: string;
     bulkId: string;
 }
+
+// Extend Express Request
 class BulkAdminController {
     private bulkAdminService: BulkAdminService;
     private adminLetter: AdminLetter;
@@ -137,29 +140,23 @@ class BulkAdminController {
     public loginAdmin = async (req: Request, res: Response) => {
         try {
             const { email, password } = req.body;
-
             if (!email || !password) {
-                res.status(400).json({
-                    status: false,
-                    message: 'Invalid email or password'
-                });
+                res.status(400).json({ status: false, message: 'Invalid email or password' });
                 return;
             }
 
             const user = await this.bulkAdminService.loginAdmin(email, password);
-
             if (user.status === false) {
-                res.status(403).json({
-                    status: false,
-                    message: `Admin Account Not Verified, Please Contact your administrator`
-                });
+                res.status(403).json({ status: false, message: 'Admin Account Not Verified' });
                 return;
             }
-            const userId = user._id!.toString();
-            const token = generateToken(res, { _id: userId });
+
+            const token = jwt.sign({ id: user._id!.toString() }, process.env.SECRET_KEY as string, { expiresIn: '30d' });
+
             res.status(200).json({
                 status: true,
-                message: `${user.fullname} Admin, Successfully logged in`
+                message: `${user.fullname} Admin, Successfully logged in`,
+                token
             });
         } catch (error: any) {
             res.status(500).json({
@@ -169,10 +166,10 @@ class BulkAdminController {
             });
         }
     };
-
     public adminCount = async (req: Request, res: Response) => {
         try {
-            if (!req.user) {
+            const user = req.user as AdminUser;
+            if (!user) {
                 res.status(403).json({
                     status: false,
                     message: 'You must be logged in to access this page'
@@ -182,12 +179,12 @@ class BulkAdminController {
             }
 
             const adminDetails = {
-                fullname: req.user.fullname,
-                id: req.user._id,
-                email: req.user.email,
-                province: req.user.province,
-                phone: req.user.phone,
-                bulkId: req.user.bulkId
+                fullname: user.fullname,
+                id: user._id,
+                email: user.email,
+                province: user.province,
+                phone: user.phone,
+                bulkId: user.bulkId
             };
 
             const count = await this.bulkAdminService.countPeopleInProvince(adminDetails.province);
@@ -203,12 +200,11 @@ class BulkAdminController {
 
             const record = count > 1 ? 'records' : 'record';
             const yourFee = count * 6000;
-            const email = req.user.email;
-            const fullname = req.user.fullname;
+            const email = user.email;
+            const fullname = user.fullname;
             res.status(200).json({
                 status: true,
-                data: `You have ${count} ${record}`,
-                fees: `An you are required to pay ${yourFee}`,
+                message: 'The Details of the Registered User Has been Sent to Mail, kindly Check it...',
                 adminDetails
             });
             const paymentDetails = await this.adminLetter.supperAdminsPayment({ count, yourFee, email, fullname });
