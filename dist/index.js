@@ -21,7 +21,7 @@ const port = process.env.PORT || 3000;
 app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({ extended: true }));
 const corsOptions = {
-    origin: 'https://etsap-fe.vercel.app',
+    origin: 'https://etsapsfrica.com',
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'authorization', 'Authorization']
 };
