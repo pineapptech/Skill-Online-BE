@@ -21,10 +21,9 @@ const port = process.env.PORT || 3000;
 app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({ extended: true }));
 const corsOptions = {
-    origin: 'https://etsap-fe.vercel.app', // Frontend URL
-    credentials: true, // Critical for cookie-based authentication
+    origin: 'https://etsap-fe.vercel.app',
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'Cookie']
+    allowedHeaders: ['Content-Type', 'authorization', 'Authorization']
 };
 app.use((0, cookie_parser_1.default)());
 app.use((0, cors_1.default)(corsOptions));

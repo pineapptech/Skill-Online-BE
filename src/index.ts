@@ -20,10 +20,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 const corsOptions = {
-    origin: 'https://etsap-fe.vercel.app', // Frontend URL
-    credentials: true, // Critical for cookie-based authentication
+    origin: 'https://etsap-fe.vercel.app',
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'Cookie']
+    allowedHeaders: ['Content-Type', 'authorization', 'Authorization']
 };
 app.use(cookieParser());
 app.use(cors(corsOptions));
