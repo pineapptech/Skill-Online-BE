@@ -20,13 +20,13 @@ const app = (0, express_1.default)();
 const port = process.env.PORT || 3000;
 app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({ extended: true }));
-const corsOptions = {
+/* const corsOptions = {
     origin: 'https://etsapsfrica.com',
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'authorization', 'Authorization']
-};
+}; */
 app.use((0, cookie_parser_1.default)());
-app.use((0, cors_1.default)(corsOptions));
+app.use((0, cors_1.default)());
 app.use('/api/v1/auth', user_route_1.default);
 app.use('/api', payment_route_1.default);
 app.use('/api/v1/attachment', attached_email_route_1.default);
