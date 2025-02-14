@@ -2,7 +2,8 @@ import { NextFunction, Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import BulkAdmin from '../models/bulk.model';
 import { AdminUser } from '../interfaces/admin.interface';
-
+import { configDotenv } from 'dotenv';
+configDotenv();
 declare global {
     namespace Express {
         interface Request {
@@ -13,7 +14,7 @@ declare global {
 
 export const verifyAdminToken = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        if (!process.env.SECRET_KEY) {
+        if (!process.env.JWT_SECRET) {
             res.status(404).json({
                 status: false,
                 message: 'Secret Key not set'
@@ -27,7 +28,7 @@ export const verifyAdminToken = async (req: Request, res: Response, next: NextFu
         }
 
         const token = authHeader.split(' ')[1];
-        const decoded = jwt.verify(token, process.env.SECRET_KEY as string) as { id: string };
+        const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as { id: string };
 
         const user = (await BulkAdmin.findById(decoded.id).select('-password')) as AdminUser;
         if (!user) {

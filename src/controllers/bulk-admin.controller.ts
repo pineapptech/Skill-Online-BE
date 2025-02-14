@@ -8,6 +8,8 @@ import { generateBulkId } from '../utils/bulk-id';
 import { log } from 'console';
 import jwt from 'jsonwebtoken';
 import { AdminUser } from '../interfaces/admin.interface';
+import { configDotenv } from 'dotenv';
+configDotenv();
 
 export interface adminInfo {
     fullname: string;
@@ -151,7 +153,7 @@ class BulkAdminController {
                 return;
             }
 
-            const token = jwt.sign({ id: user._id!.toString() }, process.env.SECRET_KEY as string, { expiresIn: '30d' });
+            const token = jwt.sign({ id: user._id!.toString() }, process.env.JWT_SECRET as string, { expiresIn: '30d' });
 
             res.status(200).json({
                 status: true,

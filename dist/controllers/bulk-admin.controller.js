@@ -19,6 +19,8 @@ const admin_letter_email_1 = require("../emails/admin-letter.email");
 const bulk_id_1 = require("../utils/bulk-id");
 const console_1 = require("console");
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+const dotenv_1 = require("dotenv");
+(0, dotenv_1.configDotenv)();
 // Extend Express Request
 class BulkAdminController {
     constructor() {
@@ -134,7 +136,7 @@ class BulkAdminController {
                     res.status(403).json({ status: false, message: 'Admin Account Not Verified' });
                     return;
                 }
-                const token = jsonwebtoken_1.default.sign({ id: user._id.toString() }, process.env.SECRET_KEY, { expiresIn: '30d' });
+                const token = jsonwebtoken_1.default.sign({ id: user._id.toString() }, process.env.JWT_SECRET, { expiresIn: '30d' });
                 res.status(200).json({
                     status: true,
                     message: `${user.fullname} Admin, Successfully logged in`,

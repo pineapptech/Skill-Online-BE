@@ -15,9 +15,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.verifyAdminToken = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const bulk_model_1 = __importDefault(require("../models/bulk.model"));
+const dotenv_1 = require("dotenv");
+(0, dotenv_1.configDotenv)();
 const verifyAdminToken = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        if (!process.env.SECRET_KEY) {
+        if (!process.env.JWT_SECRET) {
             res.status(404).json({
                 status: false,
                 message: 'Secret Key not set'
@@ -30,7 +32,7 @@ const verifyAdminToken = (req, res, next) => __awaiter(void 0, void 0, void 0, f
             return;
         }
         const token = authHeader.split(' ')[1];
-        const decoded = jsonwebtoken_1.default.verify(token, process.env.SECRET_KEY);
+        const decoded = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET);
         const user = (yield bulk_model_1.default.findById(decoded.id).select('-password'));
         if (!user) {
             res.status(401).json({ status: false, message: 'User not found' });
