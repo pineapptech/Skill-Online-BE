@@ -36,7 +36,6 @@ const userBulkSchema = new Schema({
     bulkId: {
         type: String,
         required: true,
-        unique: true,
         default: 'BULK/EN/0024'
     }
 });
