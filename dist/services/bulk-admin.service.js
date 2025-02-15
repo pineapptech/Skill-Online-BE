@@ -46,8 +46,8 @@ class BulkAdminService {
             }
             return user;
         });
-        this.countPeopleInProvince = (province) => __awaiter(this, void 0, void 0, function* () {
-            const count = yield user_bulk_model_1.default.countDocuments({ province });
+        this.countPeopleInProvince = (bulkId) => __awaiter(this, void 0, void 0, function* () {
+            const count = yield user_bulk_model_1.default.countDocuments({ bulkId });
             return count;
         });
     }

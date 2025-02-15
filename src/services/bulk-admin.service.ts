@@ -41,8 +41,8 @@ export class BulkAdminService {
         return user;
     };
 
-    public countPeopleInProvince = async (province: string) => {
-        const count = await UserBulk.countDocuments({ province });
+    public countPeopleInProvince = async (bulkId: string) => {
+        const count = await UserBulk.countDocuments({ bulkId });
 
         return count;
     };

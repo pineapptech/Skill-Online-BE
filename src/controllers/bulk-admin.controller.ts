@@ -189,7 +189,7 @@ class BulkAdminController {
                 bulkId: user.bulkId
             };
 
-            const count = await this.bulkAdminService.countPeopleInProvince(adminDetails.province);
+            const count = await this.bulkAdminService.countPeopleInProvince(adminDetails.bulkId);
 
             if (!count) {
                 res.status(404).json({

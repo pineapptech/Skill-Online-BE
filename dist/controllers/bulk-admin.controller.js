@@ -169,7 +169,7 @@ class BulkAdminController {
                     phone: user.phone,
                     bulkId: user.bulkId
                 };
-                const count = yield this.bulkAdminService.countPeopleInProvince(adminDetails.province);
+                const count = yield this.bulkAdminService.countPeopleInProvince(adminDetails.bulkId);
                 if (!count) {
                     res.status(404).json({
                         status: false,
