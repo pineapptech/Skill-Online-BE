@@ -173,7 +173,7 @@ class BulkAdminController {
                 if (!count) {
                     res.status(404).json({
                         status: false,
-                        message: `NOT FOUND`
+                        message: `NOT FOUND - No user has registered using your bulk ID`
                     });
                     return;
                 }

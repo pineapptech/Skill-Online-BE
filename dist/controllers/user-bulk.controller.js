@@ -23,11 +23,11 @@ class UserBulkController {
                 const userInfo = req.body;
                 // Validate the user input
                 const validatedData = user_bulk_utils_1.UserBulkValidation.validate(userInfo);
-                const bulkAdmin = yield bulk_model_1.default.findOne({ email: validatedData.email });
+                const bulkAdmin = yield bulk_model_1.default.findOne({ bulkId: validatedData.bulkId });
                 if (!bulkAdmin) {
                     res.status(403).json({
                         status: false,
-                        message: 'UNAUTHORIZED ACCESS'
+                        message: 'UNAUTHORIZED ACCESS / Invalid Bulk ID Provided...'
                     });
                     return;
                 }
@@ -40,15 +40,15 @@ class UserBulkController {
                     return;
                 }
                 const id = bulkAdmin._id;
-                const bulkId = bulkAdmin.bulkId;
-                if (userInfo.bulkId !== bulkId) {
-                    res.status(403).json({
-                        status: false,
-                        message: 'UNAUTHORIZED ACCESS',
-                        details: 'Invalid bulk ID'
-                    });
-                    return;
-                }
+                // const bulkId = bulkAdmin.bulkId;
+                // if (userInfo.bulkId !== bulkId) {
+                //     res.status(403).json({
+                //         status: false,
+                //         message: 'UNAUTHORIZED ACCESS',
+                //         details: 'Invalid bulk ID'
+                //     });
+                //     return;
+                // }
                 // If everything is fine, proceed with creating the user
                 // await this.userBulkService.createUser(validatedData); // Assuming you have a method like this in your service
                 const bulkUser = yield this.userBulkService.createUser(String(id), validatedData);
