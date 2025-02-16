@@ -3,12 +3,15 @@ import { UserBulkValidation, ValidationError } from '../utils/user-bulk.utils'; 
 import IBulkUser from '../interfaces/user-bulk.interface';
 import BulkAdmin from '../models/bulk.model';
 import UserBulkService from '../services/user-bulk.service';
+import { AdminLetter } from '../emails/admin-letter.email';
 
 export class UserBulkController {
     private userBulkService: UserBulkService;
+    private adminLetter: AdminLetter;
 
     constructor() {
         this.userBulkService = new UserBulkService();
+        this.adminLetter = new AdminLetter();
     }
     public createUser = async (req: Request, res: Response): Promise<void> => {
         try {
@@ -50,8 +53,11 @@ export class UserBulkController {
             // If everything is fine, proceed with creating the user
             // await this.userBulkService.createUser(validatedData); // Assuming you have a method like this in your service
 
+            const email = validatedData.email;
+            const fullname = validatedData.fullname;
             const bulkUser = await this.userBulkService.createUser(String(id), validatedData);
 
+            const userLetter = await this.adminLetter.sendRegistrationEmailWithoutAttachment({ email, fullname });
             res.status(201).json({
                 status: true,
                 message: 'User created successfully',

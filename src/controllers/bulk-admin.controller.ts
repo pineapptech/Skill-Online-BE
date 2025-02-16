@@ -191,15 +191,6 @@ class BulkAdminController {
 
             const count = await this.bulkAdminService.countPeopleInProvince(adminDetails.bulkId);
 
-            if (!count) {
-                res.status(404).json({
-                    status: false,
-                    message: `NOT FOUND - No user has registered using your bulk ID`
-                });
-
-                return;
-            }
-
             const record = count > 1 ? 'records' : 'record';
             const yourFee = count * 6000;
             const email = user.email;

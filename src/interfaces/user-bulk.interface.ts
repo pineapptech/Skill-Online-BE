@@ -7,6 +7,7 @@ interface IBulkUser extends Document {
     bulkId: string;
     province: string;
     gender: string;
+    regNo: string;
     address: string;
     bulkAdmin: Types.ObjectId;
 }

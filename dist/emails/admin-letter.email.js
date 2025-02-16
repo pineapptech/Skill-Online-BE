@@ -136,5 +136,34 @@ class AdminLetter {
             }
         });
     }
+    sendRegistrationEmailWithoutAttachment(userData) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const transporter = yield this.createEmailTransport();
+            const mailOptions = {
+                from: process.env.SMTP_USER,
+                to: userData.email,
+                subject: 'Registration Successful',
+                html: `<span>Dear, </span> <strong> ${userData.fullname},</strong>
+    
+    
+                <p>Thank you for registering with us!</p>
+                
+                <p>We are excited that you have taken this milestone step towards acquiring you tech emerging skill. We are currently processing your application so you'll receive your admission letter and your onboarding details after the Bulk Payment has been made by your province admin.</p>
+                
+                <p>Signed,</p>
+                <br/>
+                <br/>
+                <p>SkillOnline ETSAP Onboarding team</p>`
+            };
+            try {
+                const info = yield transporter.sendMail(mailOptions);
+                console.log('Email Sent Successfully...', info.response);
+            }
+            catch (error) {
+                console.error('Email Sending Failed', error);
+                throw error;
+            }
+        });
+    }
 }
 exports.AdminLetter = AdminLetter;

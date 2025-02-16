@@ -34,6 +34,11 @@ const userBulkSchema = new mongoose_1.Schema({
         ref: 'Bulk',
         required: true
     },
+    regNo: {
+        type: String,
+        required: true,
+        default: '12345'
+    },
     bulkId: {
         type: String,
         required: true,
