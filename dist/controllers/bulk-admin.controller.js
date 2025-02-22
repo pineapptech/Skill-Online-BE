@@ -98,13 +98,13 @@ class BulkAdminController {
                     });
                     return;
                 }
-                if (updatedAdmin.status === true) {
-                    res.status(200).json({
-                        status: true,
-                        message: 'Admin Already Verified...'
-                    });
-                    return;
-                }
+                // if (updatedAdmin.status === true) {
+                //     res.status(200).json({
+                //         status: true,
+                //         message: 'Admin Already Verified...'
+                //     });
+                //     return;
+                // }
                 const fullname = updatedAdmin.fullname;
                 const bulkId = updatedAdmin.bulkId;
                 if (updatedAdmin) {
@@ -170,14 +170,15 @@ class BulkAdminController {
                     bulkId: user.bulkId
                 };
                 const count = yield this.bulkAdminService.countPeopleInProvince(adminDetails.bulkId);
-                const record = count > 1 ? 'records' : 'record';
+                const record = count > 1 ? 'Users' : 'User';
                 const yourFee = count * 6000;
                 const email = user.email;
                 const fullname = user.fullname;
                 res.status(200).json({
                     status: true,
                     message: 'The Details of the Registered User Has been Sent to Mail, kindly Check it...',
-                    adminDetails
+                    adminDetails,
+                    number_of_users: `You have Total Number of ${count} ${record} that Registered Under You, Details of the payment has been forwarded to your email address`
                 });
                 const paymentDetails = yield this.adminLetter.supperAdminsPayment({ count, yourFee, email, fullname });
             }

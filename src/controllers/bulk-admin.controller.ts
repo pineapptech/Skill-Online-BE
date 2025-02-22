@@ -9,6 +9,7 @@ import { log } from 'console';
 import jwt from 'jsonwebtoken';
 import { AdminUser } from '../interfaces/admin.interface';
 import { configDotenv } from 'dotenv';
+
 configDotenv();
 
 export interface adminInfo {
@@ -111,13 +112,13 @@ class BulkAdminController {
                 return;
             }
 
-            if (updatedAdmin.status === true) {
-                res.status(200).json({
-                    status: true,
-                    message: 'Admin Already Verified...'
-                });
-                return;
-            }
+            // if (updatedAdmin.status === true) {
+            //     res.status(200).json({
+            //         status: true,
+            //         message: 'Admin Already Verified...'
+            //     });
+            //     return;
+            // }
 
             const fullname = updatedAdmin.fullname;
             const bulkId = updatedAdmin.bulkId;
@@ -191,14 +192,15 @@ class BulkAdminController {
 
             const count = await this.bulkAdminService.countPeopleInProvince(adminDetails.bulkId);
 
-            const record = count > 1 ? 'records' : 'record';
+            const record = count > 1 ? 'Users' : 'User';
             const yourFee = count * 6000;
             const email = user.email;
             const fullname = user.fullname;
             res.status(200).json({
                 status: true,
                 message: 'The Details of the Registered User Has been Sent to Mail, kindly Check it...',
-                adminDetails
+                adminDetails,
+                number_of_users: `You have Total Number of ${count} ${record} that Registered Under You, Details of the payment has been forwarded to your email address`
             });
             const paymentDetails = await this.adminLetter.supperAdminsPayment({ count, yourFee, email, fullname });
         } catch (error) {
