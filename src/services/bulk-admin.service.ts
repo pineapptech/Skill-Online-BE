@@ -46,4 +46,9 @@ export class BulkAdminService {
 
         return count;
     };
+
+    public registeredPeopleInProvince = async (bulkId: string) => {
+        const people = await UserBulk.find({ bulkId });
+        return people;
+    };
 }

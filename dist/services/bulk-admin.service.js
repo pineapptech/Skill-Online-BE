@@ -50,6 +50,10 @@ class BulkAdminService {
             const count = yield user_bulk_model_1.default.countDocuments({ bulkId });
             return count;
         });
+        this.registeredPeopleInProvince = (bulkId) => __awaiter(this, void 0, void 0, function* () {
+            const people = yield user_bulk_model_1.default.find({ bulkId });
+            return people;
+        });
     }
 }
 exports.BulkAdminService = BulkAdminService;

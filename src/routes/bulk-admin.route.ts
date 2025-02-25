@@ -12,5 +12,6 @@ bulkAdminRouter.post('/create-user', userBulkController.createUser);
 bulkAdminRouter.patch('/change-status', bulkAdminController.updateAdminStatus);
 bulkAdminRouter.post('/auth', bulkAdminController.loginAdmin);
 bulkAdminRouter.get('/count', verifyAdminToken, bulkAdminController.adminCount);
+bulkAdminRouter.get('/users', verifyAdminToken, bulkAdminController.fetchRegisteredUsers);
 
 export default bulkAdminRouter;

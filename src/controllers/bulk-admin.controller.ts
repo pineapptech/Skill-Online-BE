@@ -211,6 +211,45 @@ class BulkAdminController {
             });
         }
     };
+
+    public fetchRegisteredUsers = async (req: Request, res: Response) => {
+        try {
+            const user = req.user as AdminUser;
+            if (!user) {
+                res.status(403).json({
+                    status: false,
+                    message: 'You must be logged in to access this page'
+                });
+
+                return;
+            }
+
+            const bulkId = user.bulkId;
+
+            const registeredUser = await this.bulkAdminService.registeredPeopleInProvince(bulkId);
+            const number_of_registered_users = registeredUser.length > 1 ? 'Users' : 'User';
+
+            if (registeredUser.length > 0) {
+                res.status(200).json({
+                    status: true,
+                    number_of_users: `${registeredUser.length} ${number_of_registered_users}`,
+                    data: registeredUser
+                });
+                return;
+            } else {
+                res.status(404).json({
+                    status: false,
+                    message: 'You Currently do not have any user that are registered under you, kindly encourage your them to register to be able to view them...'
+                });
+            }
+        } catch (error) {
+            res.status(500).json({
+                status: false,
+                message: 'Attempting get User Registered Under you Failed',
+                error: error instanceof Error ? error.message : 'Unknown error occurred'
+            });
+        }
+    };
 }
 
 export default BulkAdminController;
