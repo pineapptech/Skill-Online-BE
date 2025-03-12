@@ -16,8 +16,8 @@ exports.UserBulkController = void 0;
 const user_bulk_utils_1 = require("../utils/user-bulk.utils"); // Import the validation class
 const bulk_model_1 = __importDefault(require("../models/bulk.model"));
 const user_bulk_service_1 = __importDefault(require("../services/user-bulk.service"));
-const admin_letter_email_1 = require("../emails/admin-letter.email");
 class UserBulkController {
+    // private adminLetter: AdminLetter;
     constructor() {
         this.createUser = (req, res) => __awaiter(this, void 0, void 0, function* () {
             try {
@@ -55,7 +55,7 @@ class UserBulkController {
                 const email = validatedData.email;
                 const fullname = validatedData.fullname;
                 const bulkUser = yield this.userBulkService.createUser(String(id), validatedData);
-                const userLetter = yield this.adminLetter.sendRegistrationEmailWithoutAttachment({ email, fullname });
+                // const userLetter = await this.adminLetter.sendRegistrationEmailWithoutAttachment({ email, fullname });
                 res.status(201).json({
                     status: true,
                     message: 'User created successfully',
@@ -79,7 +79,7 @@ class UserBulkController {
             }
         });
         this.userBulkService = new user_bulk_service_1.default();
-        this.adminLetter = new admin_letter_email_1.AdminLetter();
+        // this.adminLetter = new AdminLetter();
     }
 }
 exports.UserBulkController = UserBulkController;
