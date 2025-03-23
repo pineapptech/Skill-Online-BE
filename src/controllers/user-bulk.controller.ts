@@ -3,7 +3,7 @@ import { UserBulkValidation, ValidationError } from '../utils/user-bulk.utils'; 
 import IBulkUser from '../interfaces/user-bulk.interface';
 import BulkAdmin from '../models/bulk.model';
 import UserBulkService from '../services/user-bulk.service';
-import { AdminLetter } from '../emails/admin-letter.email';
+// import { AdminLetter } from '../emails/admin-letter.email';
 
 export class UserBulkController {
     private userBulkService: UserBulkService;

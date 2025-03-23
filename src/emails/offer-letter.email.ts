@@ -79,8 +79,8 @@ class OfferEmail {
         </tbody>
       </table>
 
-      <p>Click the Link Below to Join the Slack Channel </p>
-      <button style="background-color: purple; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;"> <a style="color: white; text-decoration: none;" href="https://join.slack.com/t/emergingtechs-gig3864/shared_invite/zt-315x62j35-71tIrbW1oZzSFWFKafcbqw">Link To Join the Slack Channel</a></button>
+      <p>Click the Link Below to Join the Discord Channel </p>
+      <button style="background-color: purple; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;"> <a style="color: white; text-decoration: none;" href="https://discord.gg/FwQmepvR">Link To Join the Discord Channel</a></button>
             `,
 
             attachments: [

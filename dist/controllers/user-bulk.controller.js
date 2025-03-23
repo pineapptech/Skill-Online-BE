@@ -16,6 +16,7 @@ exports.UserBulkController = void 0;
 const user_bulk_utils_1 = require("../utils/user-bulk.utils"); // Import the validation class
 const bulk_model_1 = __importDefault(require("../models/bulk.model"));
 const user_bulk_service_1 = __importDefault(require("../services/user-bulk.service"));
+// import { AdminLetter } from '../emails/admin-letter.email';
 class UserBulkController {
     // private adminLetter: AdminLetter;
     constructor() {
