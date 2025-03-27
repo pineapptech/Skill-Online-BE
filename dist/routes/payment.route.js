@@ -11,4 +11,5 @@ const paymentController = new payment_controller_1.PaymentController(process.env
 paymentRouter.post('/initialize-payment', paymentController.initiatePayment.bind(paymentController));
 paymentRouter.get('/verify', paymentController.verifyPayment.bind(paymentController));
 paymentRouter.post('/webhook', paymentController.handleWebhook.bind(paymentController));
+paymentRouter.get('/status', paymentController.getPaymentStatus.bind(paymentController));
 exports.default = paymentRouter;

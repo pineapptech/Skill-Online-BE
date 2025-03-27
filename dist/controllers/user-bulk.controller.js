@@ -16,6 +16,7 @@ exports.UserBulkController = void 0;
 const user_bulk_utils_1 = require("../utils/user-bulk.utils"); // Import the validation class
 const bulk_model_1 = __importDefault(require("../models/bulk.model"));
 const user_bulk_service_1 = __importDefault(require("../services/user-bulk.service"));
+const user_bulk_model_1 = __importDefault(require("../models/user-bulk.model"));
 // import { AdminLetter } from '../emails/admin-letter.email';
 class UserBulkController {
     // private adminLetter: AdminLetter;
@@ -81,6 +82,58 @@ class UserBulkController {
         });
         this.userBulkService = new user_bulk_service_1.default();
         // this.adminLetter = new AdminLetter();
+    }
+    // public getUsers = async (req: Request, res: Response): Promise<void> => {
+    //     try {
+    //         const users = await this.userBulkService.getAllUsers();
+    //         res.status(200).json({
+    //             status: true,
+    //             data: users
+    //         });
+    //     } catch (error: any) {
+    //         res.status(500).json({
+    //             status: false,
+    //             message: error.message
+    //         });
+    //     }
+    // };
+    getUsers(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                // Parse page and limit from query parameters
+                const page = parseInt(req.query.page) || 1;
+                const limit = parseInt(req.query.limit) || 100;
+                // Validate inputs
+                const pageNum = Math.max(1, page);
+                const pageSize = Math.min(Math.max(1, limit), 500);
+                // Retrieve total count of users
+                const totalUsers = yield user_bulk_model_1.default.countDocuments();
+                // Calculate total pages
+                const totalPages = Math.ceil(totalUsers / pageSize);
+                // Retrieve paginated user emails
+                const users = yield user_bulk_model_1.default.find()
+                    .select('email')
+                    .skip((pageNum - 1) * pageSize)
+                    .limit(pageSize);
+                // Extract email addresses
+                const emails = users.map((user) => user.email);
+                // Send response
+                res.json({
+                    page: pageNum,
+                    limit: pageSize,
+                    totalUsers,
+                    totalPages,
+                    emails
+                });
+            }
+            catch (error) {
+                console.error('Error retrieving users:', error);
+                res.status(500).json({
+                    message: 'Failed to retrieve users',
+                    error: error instanceof Error ? error.message : 'Unknown error'
+                });
+            }
+        });
     }
 }
 exports.UserBulkController = UserBulkController;

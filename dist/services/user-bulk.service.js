@@ -23,6 +23,22 @@ class UserBulkService {
             const userData = Object.assign({ bulkAdmin: new mongoose_1.Types.ObjectId(bulkId) }, userInfo);
             return yield user_bulk_model_1.default.create(userData);
         });
+        // getAllUsers = async (page: number = 1, limit: number = 100): Promise<string[]> => {
+        //     // Validate page and limit
+        //     const pageNum = Math.max(1, page);
+        //     const pageSize = Math.min(Math.max(1, limit), 500); // Limit max page size to 500
+        //     try {
+        //         const users = await UserBulk.find()
+        //             .select('email') // Only select email field
+        //             .skip((pageNum - 1) * pageSize) // Skip previous pages
+        //             .limit(pageSize); // Limit results per page
+        //         // Extract just the email addresses
+        //         return users.map((user) => user.email);
+        //     } catch (error) {
+        //         console.error('Error retrieving users:', error);
+        //         throw new Error('Failed to retrieve users');
+        //     }
+        // };
     }
 }
 exports.default = UserBulkService;

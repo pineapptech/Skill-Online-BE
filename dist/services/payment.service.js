@@ -85,5 +85,11 @@ class PayStackService {
             }
         });
     }
+    getPaymentStatus() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const status = yield this.paymentRepository.getPaymentStatus();
+            return status;
+        });
+    }
 }
 exports.PayStackService = PayStackService;

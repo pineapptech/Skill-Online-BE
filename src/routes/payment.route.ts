@@ -8,5 +8,6 @@ const paymentController = new PaymentController(process.env.PAYSTACK_SECRET_KEY 
 paymentRouter.post('/initialize-payment', paymentController.initiatePayment.bind(paymentController));
 paymentRouter.get('/verify', paymentController.verifyPayment.bind(paymentController));
 paymentRouter.post('/webhook', paymentController.handleWebhook.bind(paymentController));
+paymentRouter.get('/status', paymentController.getPaymentStatus.bind(paymentController));
 
 export default paymentRouter;

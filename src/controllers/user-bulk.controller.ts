@@ -3,6 +3,7 @@ import { UserBulkValidation, ValidationError } from '../utils/user-bulk.utils'; 
 import IBulkUser from '../interfaces/user-bulk.interface';
 import BulkAdmin from '../models/bulk.model';
 import UserBulkService from '../services/user-bulk.service';
+import UserBulk from '../models/user-bulk.model';
 // import { AdminLetter } from '../emails/admin-letter.email';
 
 export class UserBulkController {
@@ -78,4 +79,61 @@ export class UserBulkController {
             }
         }
     };
+
+    // public getUsers = async (req: Request, res: Response): Promise<void> => {
+    //     try {
+    //         const users = await this.userBulkService.getAllUsers();
+    //         res.status(200).json({
+    //             status: true,
+    //             data: users
+    //         });
+    //     } catch (error: any) {
+    //         res.status(500).json({
+    //             status: false,
+    //             message: error.message
+    //         });
+    //     }
+    // };
+
+    public async getUsers(req: Request, res: Response): Promise<void> {
+        try {
+            // Parse page and limit from query parameters
+            const page = parseInt(req.query.page as string) || 1;
+            const limit = parseInt(req.query.limit as string) || 100;
+
+            // Validate inputs
+            const pageNum = Math.max(1, page);
+            const pageSize = Math.min(Math.max(1, limit), 500);
+
+            // Retrieve total count of users
+            const totalUsers = await UserBulk.countDocuments();
+
+            // Calculate total pages
+            const totalPages = Math.ceil(totalUsers / pageSize);
+
+            // Retrieve paginated user emails
+            const users = await UserBulk.find()
+                .select('email')
+                .skip((pageNum - 1) * pageSize)
+                .limit(pageSize);
+
+            // Extract email addresses
+            const emails = users.map((user) => user.email);
+
+            // Send response
+            res.json({
+                page: pageNum,
+                limit: pageSize,
+                totalUsers,
+                totalPages,
+                emails
+            });
+        } catch (error) {
+            console.error('Error retrieving users:', error);
+            res.status(500).json({
+                message: 'Failed to retrieve users',
+                error: error instanceof Error ? error.message : 'Unknown error'
+            });
+        }
+    }
 }

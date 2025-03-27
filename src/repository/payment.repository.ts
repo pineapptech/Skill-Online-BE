@@ -14,4 +14,9 @@ export class PaymentRepository implements IPaymentRepository {
     async updateStatus(reference: string, status: PaymentStatus): Promise<void> {
         await Payment.updateOne({ reference }, { status });
     }
+
+    async getPaymentStatus(): Promise<IPayment[]> {
+        const payment = await Payment.find({ status: PaymentStatus.SUCCESS });
+        return payment;
+    }
 }

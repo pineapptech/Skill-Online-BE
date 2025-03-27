@@ -43,4 +43,14 @@ export class PaymentController {
             res.status(500).send('Webhook processing failed');
         }
     }
+
+    async getPaymentStatus(req: Request, res: Response): Promise<void> {
+        try {
+            const status = await this.paystackService.getPaymentStatus();
+            res.json(status);
+        } catch (error) {
+            console.error('Error fetching payment status:', error);
+            throw error;
+        }
+    }
 }

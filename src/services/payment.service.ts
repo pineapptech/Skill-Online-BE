@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { IPaymentService, PaymentStatus } from '../interfaces/payment.interface';
+import { IPayment, IPaymentService, PaymentStatus } from '../interfaces/payment.interface';
 import { PaymentRepository } from '../repository/payment.repository';
 import { Types } from 'mongoose';
 
@@ -79,5 +79,10 @@ export class PayStackService implements IPaymentService {
                 await this.paymentRepository.updateStatus(data.reference, PaymentStatus.FAILED);
                 break;
         }
+    }
+
+    async getPaymentStatus() {
+        const status = await this.paymentRepository.getPaymentStatus();
+        return status;
     }
 }

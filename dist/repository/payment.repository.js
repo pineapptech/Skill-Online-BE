@@ -11,6 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PaymentRepository = void 0;
 const payment_model_1 = require("../models/payment.model");
+const payment_interface_1 = require("../interfaces/payment.interface");
 class PaymentRepository {
     create(paymentData) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -26,6 +27,12 @@ class PaymentRepository {
     updateStatus(reference, status) {
         return __awaiter(this, void 0, void 0, function* () {
             yield payment_model_1.Payment.updateOne({ reference }, { status });
+        });
+    }
+    getPaymentStatus() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const payment = yield payment_model_1.Payment.find({ status: payment_interface_1.PaymentStatus.SUCCESS });
+            return payment;
         });
     }
 }

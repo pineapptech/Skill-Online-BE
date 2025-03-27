@@ -56,5 +56,17 @@ class PaymentController {
             }
         });
     }
+    getPaymentStatus(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const status = yield this.paystackService.getPaymentStatus();
+                res.json(status);
+            }
+            catch (error) {
+                console.error('Error fetching payment status:', error);
+                throw error;
+            }
+        });
+    }
 }
 exports.PaymentController = PaymentController;
