@@ -101,9 +101,12 @@ export class UserBulkController {
             const page = parseInt(req.query.page as string) || 1;
             const limit = parseInt(req.query.limit as string) || 100;
 
-            // Validate inputs
+            // Validate inputs (removed upper limit constraint)
             const pageNum = Math.max(1, page);
-            const pageSize = Math.min(Math.max(1, limit), 500);
+            const pageSize = Math.max(1, limit); // No upper limit restriction
+
+            // Get fields to select (default to email, fullname, and courses)
+            const fields = ((req.query.fields as string) || 'email,fullname,course, -_id').split(',').join(' ');
 
             // Retrieve total count of users
             const totalUsers = await UserBulk.countDocuments();
@@ -111,14 +114,11 @@ export class UserBulkController {
             // Calculate total pages
             const totalPages = Math.ceil(totalUsers / pageSize);
 
-            // Retrieve paginated user emails
+            // Retrieve paginated users with selected fields
             const users = await UserBulk.find()
-                .select('email')
+                .select(fields)
                 .skip((pageNum - 1) * pageSize)
                 .limit(pageSize);
-
-            // Extract email addresses
-            const emails = users.map((user) => user.email);
 
             // Send response
             res.json({
@@ -126,7 +126,8 @@ export class UserBulkController {
                 limit: pageSize,
                 totalUsers,
                 totalPages,
-                emails
+                count: users.length,
+                users: users
             });
         } catch (error) {
             console.error('Error retrieving users:', error);

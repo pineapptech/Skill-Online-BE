@@ -103,27 +103,28 @@ class UserBulkController {
                 // Parse page and limit from query parameters
                 const page = parseInt(req.query.page) || 1;
                 const limit = parseInt(req.query.limit) || 100;
-                // Validate inputs
+                // Validate inputs (removed upper limit constraint)
                 const pageNum = Math.max(1, page);
-                const pageSize = Math.min(Math.max(1, limit), 500);
+                const pageSize = Math.max(1, limit); // No upper limit restriction
+                // Get fields to select (default to email, fullname, and courses)
+                const fields = (req.query.fields || 'email,fullname,course, -_id').split(',').join(' ');
                 // Retrieve total count of users
                 const totalUsers = yield user_bulk_model_1.default.countDocuments();
                 // Calculate total pages
                 const totalPages = Math.ceil(totalUsers / pageSize);
-                // Retrieve paginated user emails
+                // Retrieve paginated users with selected fields
                 const users = yield user_bulk_model_1.default.find()
-                    .select('email')
+                    .select(fields)
                     .skip((pageNum - 1) * pageSize)
                     .limit(pageSize);
-                // Extract email addresses
-                const emails = users.map((user) => user.email);
                 // Send response
                 res.json({
                     page: pageNum,
                     limit: pageSize,
                     totalUsers,
                     totalPages,
-                    emails
+                    count: users.length,
+                    users: users
                 });
             }
             catch (error) {
