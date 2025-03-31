@@ -9,5 +9,6 @@ paymentRouter.post('/initialize-payment', paymentController.initiatePayment.bind
 paymentRouter.get('/verify', paymentController.verifyPayment.bind(paymentController));
 paymentRouter.post('/webhook', paymentController.handleWebhook.bind(paymentController));
 paymentRouter.get('/status', paymentController.getPaymentStatus.bind(paymentController));
+paymentRouter.get('/users', paymentController.getUserDetails.bind(paymentController));
 
 export default paymentRouter;

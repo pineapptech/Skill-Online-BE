@@ -8,9 +8,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PaymentController = void 0;
 const payment_service_1 = require("../services/payment.service");
+const user_model_1 = __importDefault(require("../models/user.model"));
+const console_1 = require("console");
 class PaymentController {
     constructor(secretKey) {
         this.paystackService = new payment_service_1.PayStackService(secretKey);
@@ -60,11 +65,56 @@ class PaymentController {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const status = yield this.paystackService.getPaymentStatus();
-                res.json(status);
+                res.json({
+                    message: 'Payment status fetched successfully',
+                    length: status.length,
+                    status
+                });
             }
             catch (error) {
                 console.error('Error fetching payment status:', error);
                 throw error;
+            }
+        });
+    }
+    getUserDetails(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const users = yield user_model_1.default.aggregate([
+                    {
+                        $lookup: {
+                            from: 'payments', // Name of the collection in MongoDB
+                            localField: '_id',
+                            foreignField: 'userId',
+                            as: 'payments'
+                        }
+                    },
+                    {
+                        $match: {
+                            'payments.status': 'success' // Filter for users with at least one successful payment
+                        }
+                    },
+                    {
+                        $project: {
+                            firstName: 1,
+                            lastName: 1,
+                            email: 1,
+                            regNo: 1,
+                            phone: 1,
+                            course: 1,
+                            payments: 1 // Include payment details if needed
+                        }
+                    }
+                ]);
+                res.status(200).json({
+                    message: 'Users fetched successfully',
+                    length: users.length,
+                    users
+                });
+            }
+            catch (error) {
+                res.status(500).json({ message: 'Error fetching users', error });
+                (0, console_1.log)(error.message);
             }
         });
     }

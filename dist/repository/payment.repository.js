@@ -8,10 +8,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PaymentRepository = void 0;
 const payment_model_1 = require("../models/payment.model");
 const payment_interface_1 = require("../interfaces/payment.interface");
+const user_model_1 = __importDefault(require("../models/user.model"));
 class PaymentRepository {
     create(paymentData) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -33,6 +37,16 @@ class PaymentRepository {
         return __awaiter(this, void 0, void 0, function* () {
             const payment = yield payment_model_1.Payment.find({ status: payment_interface_1.PaymentStatus.SUCCESS });
             return payment;
+        });
+    }
+    getUserDetails() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const users = yield user_model_1.default.find().populate({
+                path: 'payment',
+                match: { status: payment_interface_1.PaymentStatus.SUCCESS },
+                options: { strictPopulate: false }
+            });
+            return users;
         });
     }
 }

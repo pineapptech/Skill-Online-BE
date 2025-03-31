@@ -85,4 +85,9 @@ export class PayStackService implements IPaymentService {
         const status = await this.paymentRepository.getPaymentStatus();
         return status;
     }
+
+    async getUserDetails() {
+        const users = await this.paymentRepository.getUserDetails();
+        return users;
+    }
 }

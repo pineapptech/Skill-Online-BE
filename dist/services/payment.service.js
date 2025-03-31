@@ -91,5 +91,11 @@ class PayStackService {
             return status;
         });
     }
+    getUserDetails() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const users = yield this.paymentRepository.getUserDetails();
+            return users;
+        });
+    }
 }
 exports.PayStackService = PayStackService;
