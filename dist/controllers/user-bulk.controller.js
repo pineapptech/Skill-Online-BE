@@ -107,7 +107,7 @@ class UserBulkController {
                 const pageNum = Math.max(1, page);
                 const pageSize = Math.max(1, limit); // No upper limit restriction
                 // Get fields to select (default to email, fullname, and courses)
-                const fields = (req.query.fields || 'email,fullname,course, -_id').split(',').join(' ');
+                const fields = (req.query.fields || 'email,fullname,course, province, gender, address, regNo -_id').split(',').join(' ');
                 // Retrieve total count of users
                 const totalUsers = yield user_bulk_model_1.default.countDocuments();
                 // Calculate total pages
