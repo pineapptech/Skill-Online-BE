@@ -56,6 +56,10 @@ const userSchema = new mongoose_1.Schema({
     course: {
         type: String,
         trim: true
+    },
+    promoCode: {
+        type: String,
+        trim: true
     }
 }, {
     timestamps: true,

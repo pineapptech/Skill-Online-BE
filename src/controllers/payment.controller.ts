@@ -3,6 +3,7 @@ import { Request, Response } from 'express';
 import { PayStackService } from '../services/payment.service';
 import User from '../models/user.model';
 import { countReset, log } from 'console';
+import { Payment } from '../models/payment.model';
 
 export class PaymentController {
     private paystackService: PayStackService;
@@ -72,7 +73,7 @@ export class PaymentController {
                 },
                 {
                     $match: {
-                        'payments.status': 'success' // Filter for users with at least one successful payment
+                        payments: { $elemMatch: { status: 'success' } } // Correct way to match array elements
                     }
                 },
                 {
@@ -83,7 +84,13 @@ export class PaymentController {
                         regNo: 1,
                         phone: 1,
                         course: 1,
-                        payments: 1 // Include payment details if needed
+                        payments: {
+                            $filter: {
+                                input: '$payments',
+                                as: 'payment',
+                                cond: { $eq: ['$$payment.status', 'success'] } // Filter out non-success payments
+                            }
+                        }
                     }
                 }
             ]);
@@ -98,4 +105,73 @@ export class PaymentController {
             log(error.message);
         }
     }
+
+    getUsersWithSuccessfulPayments = async (req: Request, res: Response) => {
+        try {
+            const usersWithSuccessfulPayments = await Payment.aggregate([
+                {
+                    $match: { status: 'success' } // Step 1: Get only successful payments
+                },
+                {
+                    $lookup: {
+                        from: 'users', // Step 2: Join with users collection
+                        localField: 'email', // Match by email instead of userId
+                        foreignField: 'email',
+                        as: 'user'
+                    }
+                },
+                {
+                    $unwind: '$user' // Convert array to object
+                },
+                {
+                    $group: {
+                        _id: '$user.email', // Step 3: Group users by email
+                        firstName: { $first: '$user.firstName' },
+                        lastName: { $first: '$user.lastName' },
+                        email: { $first: '$user.email' },
+                        regNo: { $first: '$user.regNo' },
+                        phone: { $first: '$user.phone' },
+                        courses: { $addToSet: '$user.course' }, // Ensure all registered courses are included
+                        payments: {
+                            $push: {
+                                amount: '$amount',
+                                reference: '$reference',
+                                status: '$status'
+                            }
+                        } // Collect all successful payments
+                    }
+                },
+                {
+                    $project: {
+                        _id: 0, // Exclude MongoDB's default _id
+                        firstName: 1,
+                        lastName: 1,
+                        email: 1,
+                        regNo: 1,
+                        phone: 1,
+                        courses: 1,
+                        payments: 1
+                    }
+                }
+            ]);
+
+            res.status(200).json({
+                message: 'Users with successful payments fetched successfully',
+                length: usersWithSuccessfulPayments.length,
+                usersWithSuccessfulPayments
+            });
+        } catch (error) {
+            res.status(500).json({ message: 'Error fetching users with successful payments', error });
+        }
+    };
+
+    paymentCount = async (req: Request, res: Response) => {
+        try {
+            const successfulPaymentCount = await Payment.countDocuments({ status: 'success' });
+
+            res.status(200).json({ successCount: successfulPaymentCount });
+        } catch (error) {
+            res.status(500).json({ message: 'Error counting successful payments', error });
+        }
+    };
 }

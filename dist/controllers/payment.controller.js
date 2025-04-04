@@ -16,8 +16,76 @@ exports.PaymentController = void 0;
 const payment_service_1 = require("../services/payment.service");
 const user_model_1 = __importDefault(require("../models/user.model"));
 const console_1 = require("console");
+const payment_model_1 = require("../models/payment.model");
 class PaymentController {
     constructor(secretKey) {
+        this.getUsersWithSuccessfulPayments = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                const usersWithSuccessfulPayments = yield payment_model_1.Payment.aggregate([
+                    {
+                        $match: { status: 'success' } // Step 1: Get only successful payments
+                    },
+                    {
+                        $lookup: {
+                            from: 'users', // Step 2: Join with users collection
+                            localField: 'email', // Match by email instead of userId
+                            foreignField: 'email',
+                            as: 'user'
+                        }
+                    },
+                    {
+                        $unwind: '$user' // Convert array to object
+                    },
+                    {
+                        $group: {
+                            _id: '$user.email', // Step 3: Group users by email
+                            firstName: { $first: '$user.firstName' },
+                            lastName: { $first: '$user.lastName' },
+                            email: { $first: '$user.email' },
+                            regNo: { $first: '$user.regNo' },
+                            phone: { $first: '$user.phone' },
+                            courses: { $addToSet: '$user.course' }, // Ensure all registered courses are included
+                            payments: {
+                                $push: {
+                                    amount: '$amount',
+                                    reference: '$reference',
+                                    status: '$status'
+                                }
+                            } // Collect all successful payments
+                        }
+                    },
+                    {
+                        $project: {
+                            _id: 0, // Exclude MongoDB's default _id
+                            firstName: 1,
+                            lastName: 1,
+                            email: 1,
+                            regNo: 1,
+                            phone: 1,
+                            courses: 1,
+                            payments: 1
+                        }
+                    }
+                ]);
+                res.status(200).json({
+                    message: 'Users with successful payments fetched successfully',
+                    length: usersWithSuccessfulPayments.length,
+                    usersWithSuccessfulPayments
+                });
+            }
+            catch (error) {
+                res.status(500).json({ message: 'Error fetching users with successful payments', error });
+            }
+        });
+        this.paymentCount = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                const successfulPaymentCount = yield payment_model_1.Payment.countDocuments({ status: 'success' });
+                res.status(200).json({ successCount: successfulPaymentCount });
+            }
+            catch (error) {
+                res.status(500).json({ message: 'Error counting successful payments', error });
+            }
+        });
         this.paystackService = new payment_service_1.PayStackService(secretKey);
     }
     initiatePayment(req, res) {
@@ -91,7 +159,7 @@ class PaymentController {
                     },
                     {
                         $match: {
-                            'payments.status': 'success' // Filter for users with at least one successful payment
+                            payments: { $elemMatch: { status: 'success' } } // Correct way to match array elements
                         }
                     },
                     {
@@ -102,7 +170,13 @@ class PaymentController {
                             regNo: 1,
                             phone: 1,
                             course: 1,
-                            payments: 1 // Include payment details if needed
+                            payments: {
+                                $filter: {
+                                    input: '$payments',
+                                    as: 'payment',
+                                    cond: { $eq: ['$$payment.status', 'success'] } // Filter out non-success payments
+                                }
+                            }
                         }
                     }
                 ]);

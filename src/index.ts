@@ -9,6 +9,7 @@ import attachedRouter from './routes/attached-email.route';
 import { globalError } from './errors/global.error';
 import bulkAdminRouter from './routes/bulk-admin.route';
 import cookieParser from 'cookie-parser';
+import promoRouter from './routes/promo.route';
 
 configDotenv();
 connectDB();
@@ -31,6 +32,7 @@ app.use('/api/v1/auth', router);
 app.use('/api', paymentRouter);
 app.use('/api/v1/attachment', attachedRouter);
 app.use('/api/v1/bulk-admin', bulkAdminRouter);
+app.use('/api/v1/promo', promoRouter);
 // DEFAULT ROUTE
 app.use('*', (req: Request, res: Response, next: NextFunction) => {
     const error = new CustomError(`Oops...., It seems like the Route ${req.originalUrl} You are looking for does not Exist`, 404);

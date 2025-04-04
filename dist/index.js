@@ -13,6 +13,7 @@ const cors_1 = __importDefault(require("cors"));
 const attached_email_route_1 = __importDefault(require("./routes/attached-email.route"));
 const global_error_1 = require("./errors/global.error");
 const bulk_admin_route_1 = __importDefault(require("./routes/bulk-admin.route"));
+const promo_route_1 = __importDefault(require("./routes/promo.route"));
 (0, dotenv_1.configDotenv)();
 (0, db_1.default)();
 const app = (0, express_1.default)();
@@ -29,6 +30,7 @@ app.use('/api/v1/auth', user_route_1.default);
 app.use('/api', payment_route_1.default);
 app.use('/api/v1/attachment', attached_email_route_1.default);
 app.use('/api/v1/bulk-admin', bulk_admin_route_1.default);
+app.use('/api/v1/promo', promo_route_1.default);
 // DEFAULT ROUTE
 app.use('*', (req, res, next) => {
     const error = new CustomError_1.default(`Oops...., It seems like the Route ${req.originalUrl} You are looking for does not Exist`, 404);

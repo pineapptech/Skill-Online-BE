@@ -6,6 +6,7 @@ import User from '../models/user.model';
 import generateIdentifier from '../utils/generate-regno';
 import IContact from '../interfaces/contact.interface';
 import Contact from '../models/contact.model';
+import Promo from '../models/promo.model';
 
 export class UserService {
     public createUser = async (
@@ -29,9 +30,9 @@ export class UserService {
             throw new Error('File is required');
         }
 
-        try {
-            log(file);
+        const promoCode = (await Promo.findOne({ promoCode: userData.promoCode })) || '';
 
+        try {
             // Upload file to cloudinary
             const result = await cloudinary.uploader.upload(file!.path, { folder: 'userPhoto' });
 
@@ -55,7 +56,7 @@ export class UserService {
                 course,
                 regNo,
                 address,
-
+                promoCode,
                 ...userData
             });
 

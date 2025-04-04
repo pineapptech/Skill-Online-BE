@@ -68,13 +68,6 @@ class RegistrationController {
                         email: newUser.email
                     }
                 });
-
-                // setTimeout(async () => {
-                //     const payment = await Payment.findOne({ email: newUser.email });
-                //     if (payment?.status === 'success') {
-                //         await this.offerEmail.sendRegistrationEmailWithAttachment({ firstName, email, lastName, phone, course, city, regNo, address });
-                //     }
-                // }, 5000);
             }
         } catch (error: any) {
             console.error('Registration error:', error);

@@ -14,6 +14,7 @@ interface IUser extends Document {
     passportId: string;
     photoUrl: string;
     course: string;
+    promoCode: string;
 }
 
 export default IUser;

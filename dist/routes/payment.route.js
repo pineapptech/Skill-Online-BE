@@ -13,4 +13,6 @@ paymentRouter.get('/verify', paymentController.verifyPayment.bind(paymentControl
 paymentRouter.post('/webhook', paymentController.handleWebhook.bind(paymentController));
 paymentRouter.get('/status', paymentController.getPaymentStatus.bind(paymentController));
 paymentRouter.get('/users', paymentController.getUserDetails.bind(paymentController));
+paymentRouter.get('/users-with-successful-payments', paymentController.getUsersWithSuccessfulPayments.bind(paymentController));
+paymentRouter.get('/payment-count', paymentController.paymentCount.bind(paymentController));
 exports.default = paymentRouter;

@@ -19,6 +19,7 @@ const fs_1 = __importDefault(require("fs"));
 const user_model_1 = __importDefault(require("../models/user.model"));
 const generate_regno_1 = __importDefault(require("../utils/generate-regno"));
 const contact_model_1 = __importDefault(require("../models/contact.model"));
+const promo_model_1 = __importDefault(require("../models/promo.model"));
 class UserService {
     constructor() {
         this.createUser = (file, firstName, lastName, email, phone, course, city, address, userData) => __awaiter(this, void 0, void 0, function* () {
@@ -30,8 +31,8 @@ class UserService {
             if (!file) {
                 throw new Error('File is required');
             }
+            const promoCode = (yield promo_model_1.default.findOne({ promoCode: userData.promoCode })) || '';
             try {
-                (0, console_1.log)(file);
                 // Upload file to cloudinary
                 const result = yield cloudinary_1.default.uploader.upload(file.path, { folder: 'userPhoto' });
                 // Log result only in non-production environment
@@ -48,7 +49,8 @@ class UserService {
                     phone,
                     course,
                     regNo,
-                    address }, userData));
+                    address,
+                    promoCode }, userData));
                 return user;
             }
             catch (error) {

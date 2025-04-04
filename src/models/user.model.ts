@@ -57,6 +57,11 @@ const userSchema = new Schema<IUser>(
         course: {
             type: String,
             trim: true
+        },
+
+        promoCode: {
+            type: String,
+            trim: true
         }
     },
     {
