@@ -80,7 +80,7 @@ class OfferEmail {
       </table>
 
       <p>Click the Link Below to Join the Discord Channel </p>
-      <button style="background-color: purple; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;"> <a style="color: white; text-decoration: none;" href="https://discord.gg/3x7yPdjW">Link To Join the Discord Channel</a></button>
+      <button style="background-color: purple; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;"> <a style="color: white; text-decoration: none;" href="https://discord.gg/Jqmb2Ga9pE">Link To Join the Discord Channel</a></button>
             `,
 
             attachments: [
